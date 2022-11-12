@@ -1,4 +1,3 @@
-/** @type {import("..typescript/phaser")} */
 
 // var config = {
 //     type: Phaser.AUTO,
@@ -54,7 +53,7 @@ class Test extends Phaser.Scene
         this.load.spritesheet('playerIdle', 'assets/Knight/Idle/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('floor', 'assets/Environment/Tiles.png', {frameWidth: 16, frameHeight: 16});
     }
-
+    
     create () 
     {
 
@@ -73,10 +72,8 @@ class Test extends Phaser.Scene
 
             mapData.push(row);
         }
-        console.log(mapData);
 
         map = this.make.tilemap({ data: mapData, tileWidth: 16, tileHeight: 16 });
-        map.tileHeight 
         this.cameras.main.setBounds(0, 0, 800, 600);
 
         this.bg = this.add.tileSprite(64, 0, 16, 16, 'floor');
@@ -110,7 +107,6 @@ class Test extends Phaser.Scene
     
         this.player = this.add.sprite(400, 100);
         this.player.anims.play('idle');
-        this.player.
         // this.ship = this.add.image(400, 100, 'ship').setAngle(90);
     
         // this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
