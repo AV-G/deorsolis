@@ -1,4 +1,4 @@
-/** @type {import("..typings/phaser")} */
+/** @type {import("..typescript/phaser")} */
 
 // var config = {
 //     type: Phaser.AUTO,
@@ -50,7 +50,8 @@ class Test extends Phaser.Scene
 
     preload () 
     {
-        this.load.spritesheet('player', 'assets/Knight/Run/Run-Sheet.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('playerRun', 'assets/Knight/Run/Run-Sheet.png', { frameWidth: 64, frameHeight: 32 });
+        this.load.spritesheet('playerIdle', 'assets/Knight/Idle/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('floor', 'assets/Environment/Tiles.png', {frameWidth: 16, frameHeight: 16});
     }
 
@@ -63,39 +64,56 @@ class Test extends Phaser.Scene
         {
             var row = [];
 
+
             for (var x = 0; x < mapWidth; x++)
             {
-                //  Scatter the tiles so we get more mud and less stones
                 var tileIndex = Phaser.Math.RND.weightedPick(tiles);
-
                 row.push(tileIndex);
             }
 
             mapData.push(row);
         }
+        console.log(mapData);
 
         map = this.make.tilemap({ data: mapData, tileWidth: 16, tileHeight: 16 });
-
+        map.tileHeight 
         this.cameras.main.setBounds(0, 0, 800, 600);
 
         this.bg = this.add.tileSprite(64, 0, 16, 16, 'floor');
 
-        const playerRunAnimation = this.anims.create({
-            key: 'walk',
-            frames: this.anims.generateFrameNumbers('player'),
-            frameRate: 6
-        });
+        const idleConfig = {
+            key: 'idle',
+            frames: this.anims.generateFrameNames('playerIdle'),
+            frameRate: 4,
+            repeat: -1
+        };
+
+        this.anims.create(idleConfig);
+
+        const runConfig = {
+            key: 'run',
+            frames: this.anims.generateFrameNames('playerRun'),
+            frameRate: 6,
+            repeat: -1
+        };
+
+
+        //this.anims.addMix('idle', 'run', 1500);
+        //this.anims.addMix('walk', 'idle', 500);
+
+        this.anims.create(runConfig);
 
         var tileset = map.addTilesetImage('floor');
         var layer = map.createLayer(0, tileset, 0, 0);
     
         this.cursors = this.input.keyboard.createCursorKeys();
     
-        this.player = this.add.sprite(400, 100, 'player');
+        this.player = this.add.sprite(400, 100);
+        this.player.anims.play('idle');
+        this.player.
         // this.ship = this.add.image(400, 100, 'ship').setAngle(90);
     
         // this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-    
         this.cameras.main.setZoom(4);
         this.cameras.main.startFollow(this.player);
         
@@ -107,48 +125,45 @@ class Test extends Phaser.Scene
         this.bg.tilePositionX -= 2;
         this.bg.tilePositionY -= 2;
 
+        console.log()
+
         if (this.cursors.left.isDown)
         {
-            if (!this.player.anims.isPlaying) {
-                this.player.play({ key: 'walk', repeat: 1 });
-                this.player.flipX = true;
+            if (this.player.anims.currentAnim.key == 'idle') {
+                this.player.play('run');
             }
-            else if (this.player.anims.isPlaying && this.player.flipX == false) {
-                this.player.flipX = true;
-            }
+            this.player.flipX = true;
+
             this.player.x -= 2.5;
         }
         else if (this.cursors.right.isDown)
         {
-            if (!this.player.anims.isPlaying) {
-                this.player.play({ key: 'walk', repeat: 1 });
-                this.player.flipX = false;
+            if (this.player.anims.currentAnim.key == 'idle') {
+                this.player.play('run');
             }
-            else if (this.player.anims.isPlaying && this.player.flipX == true) {
-                this.player.flipX = false;
-            }
+            this.player.flipX = false;
+
             this.player.x += 2.5;
         }
     
         if (this.cursors.up.isDown)
         {
-            if (!this.player.anims.isPlaying) {
-                this.player.play({ key: 'walk', repeat: 1 });
+            if (this.player.anims.currentAnim.key == 'idle') {
+                this.player.play('run');
             }
             this.player.y -= 2.5;
         }
         else if (this.cursors.down.isDown)
         {
-            if (!this.player.anims.isPlaying) {
-                this.player.play({ key: 'walk', repeat: 1 });
+            if (this.player.anims.currentAnim.key == 'idle') {
+                this.player.play('run');
             }
             this.player.y += 2.5;
 
         }
 
-        if (this.player.anims.isPlaying && !this.cursors.up.isDown && !this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
-            this.player.stop();
-            this.player.anims.restart();
+        if (this.player.anims.currentAnim.key != 'idle' && !this.cursors.up.isDown && !this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
+            this.player.play('idle');
         }
         
         
@@ -196,6 +211,6 @@ var sx = 0;
 var mapWidth = 51;
 var mapHeight = 37;
 var distance = 0;
-var tiles = [ 7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5 ];
+var tiles = [20];
 
 const game = new Phaser.Game(config);
