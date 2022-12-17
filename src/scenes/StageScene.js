@@ -15,13 +15,14 @@ export class StageScene extends Phaser.Scene {
 
     preload () 
     {
-        this.load.spritesheet('playerRun', 'dist/assets/heroes/knight/Run-Sheet.png', { frameWidth: 64, frameHeight: 32 });
-        this.load.spritesheet('playerIdle', 'dist/assets/heroes/knight/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
-        this.load.image('floor', 'dist/assets/environment/dungeon/Tiles.png', {frameWidth: 16, frameHeight: 16});
-        this.load.image('demoTile', 'dist/assets/environment/dungeon/Tile.png', {frameWidth: 16, frameHeight: 16});
-        this.load.spritesheet('orcRun', 'dist/assets/enemy/orcs/orc/Run/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-
-
+        this.load.spritesheet('playerRun', '/assets/heroes/knight/Run-Sheet.png', { frameWidth: 64, frameHeight: 32 });
+        this.load.spritesheet('playerIdle', '/assets/heroes/knight/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('playerWeapon', '/assets/weapons/Hands.png', { frameWidth: 16, frameHeight: 16});
+        this.load.image('floor', '/assets/environments/dungeon/Tiles.png', {frameWidth: 16, frameHeight: 16});
+        this.load.image('demoTile', '/assets/environments/dungeon/Tile.png', {frameWidth: 16, frameHeight: 16});
+        this.load.spritesheet('orcRun', '/assets/enemies/orc/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.image('chicken', '/assets/items/chicken.png', {frameWidth: 16, frameHeight: 16});
+        this.load.plugin('rexclockplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexclockplugin.min.js', true);
     }
     
     create () 
@@ -31,6 +32,14 @@ export class StageScene extends Phaser.Scene {
         this.tileSize = 16;
         this.chunks = [];
         
+        this.clock = this.plugins.get('rexclockplugin').add(this);
+
+        this.clock.start();
+        this.chicken = this.add.image(64, 64, 'chicken');
+        this.chicken.depth = 1;
+        this.chicken.x = 64;
+        this.chicken.y = 64;
+        this.chicken.visible = false;
         // var mapData = [];
 
         // for (var y = 0; y < mapHeight; y++)
@@ -89,7 +98,9 @@ export class StageScene extends Phaser.Scene {
         this.orc = this.add.sprite(0, 0)
         this.orc.anims.play('orcRun');
         this.orc.depth = 1;
-    
+        this.orc.visible = false;
+
+        
         this.player = this.add.sprite(0, 0);
         this.player.anims.play('idle');
         // this.ship = this.add.image(400, 100, 'ship').setAngle(90);
@@ -103,6 +114,8 @@ export class StageScene extends Phaser.Scene {
             this.cameras.main.worldView.y + (this.cameras.main.worldView.height * 0.5)
         );
         this.player.depth = 1;
+        
+        this.time = new Phaser.Time.Clock(this);
 
     }
 
@@ -118,7 +131,7 @@ export class StageScene extends Phaser.Scene {
 
     update () 
     {
-        
+        console.log(this.clock.now);
         this.followPoint = new Phaser.Math.Vector2(
             this.cameras.main.worldView.x + (this.cameras.main.worldView.width * 0.5),
             this.cameras.main.worldView.y + (this.cameras.main.worldView.height * 0.5)
@@ -192,6 +205,12 @@ export class StageScene extends Phaser.Scene {
         //     sx = 0;
         // }
 
+
+
+        // Player running animations
+        if (this.clock.now >= 1000 && this.clock.now <= 2000) {
+            this.chicken.visible = true;
+        }
         if (this.cursors.left.isDown)
         {
             if (this.player.anims.currentAnim.key == 'idle') {
@@ -229,6 +248,11 @@ export class StageScene extends Phaser.Scene {
         if (this.player.anims.currentAnim.key != 'idle' && !this.cursors.up.isDown && !this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
             this.player.play('idle');
         }
+
+        if ((this.player.x >= this.chicken.x - 10 && this.player.x <= this.chicken.x + 10) && (this.player.y >= this.chicken.y - 10 && this.player.y <= this.chicken.y + 10)) {
+            this.chicken.visible = false;
+        } 
+        
     }
 }
 
