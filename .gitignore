@@ -3,6 +3,7 @@ lib/
 phaser3-docs-master/
 phaser3-examples-master/
 typescript/
-lib/
 dist/
 node_modules/
+defs/phaser.d.ts
+defs/

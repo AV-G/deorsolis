@@ -1,6 +1,8 @@
 import { LoadScene } from "./scenes/LoadScene.js";
 import { StageScene } from "./scenes/StageScene.js";
 import { MenuScene } from "./scenes/MenuScene.js";
+import { UIScene } from "./scenes/UIScene.js";
+
 
 
 
@@ -9,8 +11,15 @@ const config = {
     parent: 'phaser-example',
     width: 1200,
     height: 800,
-    scene: [ LoadScene, StageScene, MenuScene ],
+    scene: [ LoadScene, StageScene, MenuScene, UIScene ],
     pixelArt: true,
+    plugins: {
+        scene: [{
+          plugin: Phaser.Plugins.Input,
+          key: 'input',
+          mapping: 'input'
+        }]
+    },
     physics: {
         default: 'arcade',
     },
