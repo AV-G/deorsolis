@@ -4,7 +4,7 @@ import { MenuScene } from "./scenes/MenuScene.js";
 import { UIScene } from "./scenes/UIScene.js";
 
 
-
+let clock;
 
 const config = {
     type: Phaser.AUTO,
@@ -22,6 +22,9 @@ const config = {
     },
     physics: {
         default: 'arcade',
+        arcade: {
+            debug: false
+        }
     },
     scale: {
         mode: Phaser.Scale.RESIZE, // you can find another types in Phaser.Scale.ScaleModeType: RESIZE | FIT | ENVELOP ...

@@ -1,5 +1,6 @@
 import { CST } from "../CST.js"
 
+let clock;
 export class LoadScene extends Phaser.Scene {
     constructor() {
         super({
@@ -18,7 +19,6 @@ export class LoadScene extends Phaser.Scene {
     create() {
         // this.scene.start(CST.SCENES.STAGE);
         // this.scene.start(CST.SCENES.UI);
-        // this.add.image(0,0, "arrow").setDepth(2);
         this.scene.start(CST.SCENES.MENU);
     }
 

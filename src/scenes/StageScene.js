@@ -1,7 +1,7 @@
 import { CST } from "../CST.js";
 import { Chunk } from "../classes/Chunk.js";
 import { UIScene } from "./UIScene.js";
-import { Spawner } from "./classes/Spawner.js"
+//import { Spawner } from "../classes/Spawner.js"
 
 
 export class StageScene extends Phaser.Scene {
@@ -23,40 +23,52 @@ export class StageScene extends Phaser.Scene {
         this.load.image('floor', '/assets/environments/dungeon/Tiles.png', {frameWidth: 16, frameHeight: 16});
         this.load.image('demoTile', '/assets/environments/dungeon/Tile.png', {frameWidth: 16, frameHeight: 16});
         this.load.spritesheet('orcRun', '/assets/enemies/orc/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('skeletonRun', '/assets/enemies/skeleton/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('skeletonRogueRun', '/assets/enemies/skeleton_rogue/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
         this.load.image('chicken', '/assets/items/chicken.png', {frameWidth: 16, frameHeight: 16});
-        this.load.plugin('rexclockplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexclockplugin.min.js', true);
         this.load.audio('pickup', '../assets/sounds/effects/powerUp.wav');
         this.load.spritesheet('radialAttack', '/assets/effects/radius_spritesheet.png', { frameWidth: 100, frameHeight: 100});
+        this.load.image('xpGem', '/assets/items/xp_gem.png');
+        this.load.image('model', '/assets/items/suzanne.obj')
     }
     
     create () 
     {
 
+        this.model = this.add.sprite(0, 0, 'model');
+        this.model.depth = 1;
+
         this.chunkSize = 16;
         this.tileSize = 16;
         this.chunks = [];
-        this.visibility = true;
+        this.xpVisibility = true;
+        this.chickenVisibility = true;
         
-        this.clock = this.plugins.get('rexclockplugin').add(this);
-
-        this.clock.start();
         this.chicken = this.add.image(64, 64, 'chicken');
         this.chicken.depth = 1;
         this.chicken.x = 64;
         this.chicken.y = 64;
-        this.chicken.visible = false;
+        this.chicken.visible = true;
+        this.chicken.setOrigin(0.5, 0.5);
+
+        this.xpGem = this.add.image(64, 64, 'xpGem');
+        this.xpGem.depth = 1;
+        this.xpGem.x = 32;
+        this.xpGem.y = 32;
+        this.xpGem.setOrigin(0.5, 0.5);
 
         let radialSprite = {
-            key: 'radialSprite';
-            frames: this.anims.generateFrameNumbers('radialAttack', { start: 0, end: 5});
-            frameRate: 10;
-            repeat: -1;
+            key: 'radialSprite',
+            frames: this.anims.generateFrameNumbers('radialAttack', {start: 0, end: 81}),
+            frameRate: 60,
+            repeat: -1,
         };
 
         this.anims.create(radialSprite);
         
-        let radial = this.add.sprite()
-        
+        this.radial = this.add.sprite(radialSprite);
+        this.radial.anims.play("radialSprite");
+        this.radial.depth = 1;
 
         // var mapData = [];
 
@@ -113,13 +125,33 @@ export class StageScene extends Phaser.Scene {
     
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.orc = this.add.sprite(0, 0)
+        this.orc = this.add.sprite(0, 0);
         this.orc.anims.play('orcRun');
         this.orc.depth = 1;
-        this.orc.visible = false;
+        this.orc.visible = true;
+
+        this.orc2 = this.add.sprite(200, 200);
+        this.orc2.anims.play('orcRun');
+        this.orc2.depth = 1;
+        this.orc2.visible = true;
+
+        this.orc3 = this.add.sprite(200, 200);
+        this.orc3.anims.play('orcRun');
+        this.orc3.depth = 1;
+        this.orc3.visible = true;
+
+        this.orc4 = this.add.sprite(400, 500);
+        this.orc4.anims.play('orcRun');
+        this.orc4.depth = 1;
+        this.orc4.visible = true;
+
+        this.orc5 = this.add.sprite(300, 100);
+        this.orc5.anims.play('orcRun');
+        this.orc5.depth = 1;
+        this.orc5.visible = true;
 
         
-        this.player = this.add.sprite(0, 0);
+        this.player = this.physics.add.sprite(0, 0);
         this.player.anims.play('idle');
         // this.ship = this.add.image(400, 100, 'ship').setAngle(90);
     
@@ -132,8 +164,11 @@ export class StageScene extends Phaser.Scene {
             this.cameras.main.worldView.y + (this.cameras.main.worldView.height * 0.5)
         );
         this.player.depth = 1;
+        //this.player.setOrigin(0.5, 0.5);
+        //this.physics.world.enable(this.player);
+        //this.physics.add.collider(this.player, this.chicken);
         
-        this.time = new Phaser.Time.Clock(this);
+        //this.time = new Phaser.Time.Clock(this);
 
     }
 
@@ -149,10 +184,9 @@ export class StageScene extends Phaser.Scene {
 
     update () 
     {
-
         this.radial.x = this.player.x;
         this.radial.y = this.player.y;
-        console.log(this.clock.now);
+        //console.log(this.clock.now);
         this.followPoint = new Phaser.Math.Vector2(
             this.cameras.main.worldView.x + (this.cameras.main.worldView.width * 0.5),
             this.cameras.main.worldView.y + (this.cameras.main.worldView.height * 0.5)
@@ -233,6 +267,164 @@ export class StageScene extends Phaser.Scene {
             this.orc.y += 1;
 
         }
+
+
+
+        if (this.player.x > this.orc2.x && this.player.y < this.orc2.y) {
+            this.orc2.x += 1;
+            this.orc2.y -= 1;
+            this.orc2.flipX = false;
+        }
+        else if (this.player.x < this.orc2.x && this.player.y < this.orc2.y) {
+            this.orc2.x -= 1;
+            this.orc2.y -= 1;
+            this.orc2.flipX = true;
+
+        }
+        else if (this.player.x > this.orc2.x && this.player.y > this.orc2.y) {
+            this.orc2.x += 1;
+            this.orc2.y += 1;
+            this.orc2.flipX = false;
+        }
+        else if (this.player.x < this.orc2.x && this.player.y > this.orc2.y) {
+            this.orc2.x -= 1;
+            this.orc2.y += 1;
+            this.orc2.flipX = true;
+
+        }
+        else if(this.player.x > this.orc2.x && this.player.y == this.orc2.y) {
+            this.orc2.x += 1;
+            this.orc2.flipX = false;
+        }
+        else if (this.player.x < this.orc2.x && this.player.y == this.orc2.y) {
+            this.orc2.x -= 1;
+            this.orc2.flipX = true;
+
+        }
+        else if(this.player.x == this.orc2.x && this.player.y < this.orc2.y) {
+            this.orc2.y -= 1;
+        }
+        else if (this.player.x == this.orc2.x && this.player.y > this.orc2.y) {
+            this.orc2.y += 1;
+
+        }
+
+        if (this.player.x > this.orc3.x && this.player.y < this.orc3.y) {
+            this.orc3.x += 1;
+            this.orc3.y -= 1;
+            this.orc3.flipX = false;
+        }
+        else if (this.player.x < this.orc3.x && this.player.y < this.orc3.y) {
+            this.orc3.x -= 1;
+            this.orc3.y -= 1;
+            this.orc3.flipX = true;
+
+        }
+        else if (this.player.x > this.orc3.x && this.player.y > this.orc3.y) {
+            this.orc3.x += 1;
+            this.orc3.y += 1;
+            this.orc3.flipX = false;
+        }
+        else if (this.player.x < this.orc3.x && this.player.y > this.orc3.y) {
+            this.orc3.x -= 1;
+            this.orc3.y += 1;
+            this.orc3.flipX = true;
+
+        }
+        else if(this.player.x > this.orc3.x && this.player.y == this.orc3.y) {
+            this.orc3.x += 1;
+            this.orc3.flipX = false;
+        }
+        else if (this.player.x < this.orc3.x && this.player.y == this.orc3.y) {
+            this.orc3.x -= 1;
+            this.orc3.flipX = true;
+
+        }
+        else if(this.player.x == this.orc3.x && this.player.y < this.orc3.y) {
+            this.orc3.y -= 1;
+        }
+        else if (this.player.x == this.orc3.x && this.player.y > this.orc3.y) {
+            this.orc3.y += 1;
+
+        }
+
+        if (this.player.x > this.orc4.x && this.player.y < this.orc4.y) {
+            this.orc4.x += 1;
+            this.orc4.y -= 1;
+            this.orc4.flipX = false;
+        }
+        else if (this.player.x < this.orc4.x && this.player.y < this.orc4.y) {
+            this.orc4.x -= 1;
+            this.orc4.y -= 1;
+            this.orc4.flipX = true;
+
+        }
+        else if (this.player.x > this.orc4.x && this.player.y > this.orc4.y) {
+            this.orc4.x += 1;
+            this.orc4.y += 1;
+            this.orc4.flipX = false;
+        }
+        else if (this.player.x < this.orc4.x && this.player.y > this.orc4.y) {
+            this.orc4.x -= 1;
+            this.orc4.y += 1;
+            this.orc4.flipX = true;
+
+        }
+        else if(this.player.x > this.orc4.x && this.player.y == this.orc4.y) {
+            this.orc4.x += 1;
+            this.orc4.flipX = false;
+        }
+        else if (this.player.x < this.orc4.x && this.player.y == this.orc4.y) {
+            this.orc4.x -= 1;
+            this.orc4.flipX = true;
+
+        }
+        else if(this.player.x == this.orc4.x && this.player.y < this.orc4.y) {
+            this.orc4.y -= 1;
+        }
+        else if (this.player.x == this.orc4.x && this.player.y > this.orc4.y) {
+            this.orc4.y += 1;
+
+        }
+
+        if (this.player.x > this.orc5.x && this.player.y < this.orc5.y) {
+            this.orc5.x += 1;
+            this.orc5.y -= 1;
+            this.orc5.flipX = false;
+        }
+        else if (this.player.x < this.orc5.x && this.player.y < this.orc5.y) {
+            this.orc5.x -= 1;
+            this.orc5.y -= 1;
+            this.orc5.flipX = true;
+
+        }
+        else if (this.player.x > this.orc5.x && this.player.y > this.orc5.y) {
+            this.orc5.x += 1;
+            this.orc5.y += 1;
+            this.orc5.flipX = false;
+        }
+        else if (this.player.x < this.orc5.x && this.player.y > this.orc5.y) {
+            this.orc5.x -= 1;
+            this.orc5.y += 1;
+            this.orc5.flipX = true;
+
+        }
+        else if(this.player.x > this.orc5.x && this.player.y == this.orc5.y) {
+            this.orc5.x += 1;
+            this.orc5.flipX = false;
+        }
+        else if (this.player.x < this.orc5.x && this.player.y == this.orc5.y) {
+            this.orc5.x -= 1;
+            this.orc5.flipX = true;
+
+        }
+        else if(this.player.x == this.orc5.x && this.player.y < this.orc5.y) {
+            this.orc5.y -= 1;
+        }
+        else if (this.player.x == this.orc5.x && this.player.y > this.orc5.y) {
+            this.orc5.y += 1;
+
+        }
         
 
 
@@ -267,9 +459,9 @@ export class StageScene extends Phaser.Scene {
 
 
         // Player running animations
-        if (this.clock.now >= 1000 && this.clock.now <= 2000) {
-            this.chicken.visible = true;
-        }
+        // if (this.clock.now >= 1000 && this.clock.now <= 2000) {
+        //     this.chicken.visible = true;
+        // }
         if (this.cursors.left.isDown)
         {
             if (this.player.anims.currentAnim.key == 'idle') {
@@ -308,11 +500,18 @@ export class StageScene extends Phaser.Scene {
             this.player.play('idle');
         }
 
-        if (this.visibility === true && (this.player.x >= this.chicken.x - 10 && this.player.x <= this.chicken.x + 10) && (this.player.y >= this.chicken.y - 10 && this.player.y <= this.chicken.y + 10)) {
+        if (this.chickenVisibility === true && (this.player.x >= this.chicken.x - 10 && this.player.x <= this.chicken.x + 10) && (this.player.y >= this.chicken.y - 10 && this.player.y <= this.chicken.y + 10)) {
             this.chicken.visible = false;
-            this.visibility = false;
+            this.chickenVisibility = false;
             this.sound.play('pickup', { volume: 0.5, loop: false });
-            console.log(this.game.scene.getScene("UI").lineProgress.addValue(0.1));
+            console.log(this.game.scene.getScene("UI").healthBar.addValue(0.1));
+        }
+
+        if (this.xpVisibility === true && (this.player.x >= this.xpGem.x - 10 && this.player.x <= this.xpGem.x + 10) && (this.player.y >= this.xpGem.y - 10 && this.player.y <= this.xpGem.y + 10)) {
+            this.xpGem.visible = false;
+            this.xpVisibility = false;
+            this.sound.play('pickup', { volume: 0.5, loop: false });
+            console.log(this.game.scene.getScene("UI").xpBar.addValue(1));
         } 
         
     }
