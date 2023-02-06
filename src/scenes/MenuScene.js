@@ -147,25 +147,34 @@ export class MenuScene extends Phaser.Scene {
         
         
         // // set up arrow key navigation for buttons
+        var spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         var buttonArray = [startGameButton, creditsButton, settingsButton];
         var currentSelectedButton = 0;
-        this.input.keyboard.on('keydown_UP', function(event) {
+        this.input.keyboard.on('keydown-UP', function(event) {
+            console.log("epic");
         if (currentSelectedButton > 0) {
             currentSelectedButton--;
             buttonArray[currentSelectedButton].setTint(0xaaaaaa);
             buttonArray[currentSelectedButton+1].setTint(0xffffff);
         }
         }, this);
-        this.input.keyboard.on('keydown_DOWN', function(event) {
+        this.input.keyboard.on('keydown-DOWN', function(event) {
         if (currentSelectedButton < buttonArray.length-1) {
             currentSelectedButton++;
             buttonArray[currentSelectedButton].setTint(0xaaaaaa);
             buttonArray[currentSelectedButton-1].setTint(0xffffff);
         }
         }, this);
-        this.input.keyboard.on('keydown_ENTER', function(event) {
+        this.input.keyboard.on('keydown-ENTER', function(event) {
         buttonArray[currentSelectedButton].emit('pointerdown');
         }, this);
+
+
+
+        console.log(this);
+
     }
+
+    
 
 }
