@@ -8,3 +8,4 @@ node_modules/
 defs/phaser.d.ts
 defs/
 .cache/
+.DS_Store
