@@ -59,15 +59,15 @@ export class StageScene extends Phaser.Scene {
 
 
 
-        this.xpVisibility = true;
-        this.chickenVisibility = true;
+        //this.xpVisibility = true;
+        // this.chickenVisibility = true;
         
-        this.chicken = this.add.image(64, 64, 'chicken');
-        this.chicken.depth = 1;
-        this.chicken.x = 64;
-        this.chicken.y = 64;
-        this.chicken.visible = true;
-        this.chicken.setOrigin(0.5, 0.5);
+        // this.chicken = this.add.image(64, 64, 'chicken');
+        // this.chicken.depth = 1;
+        // this.chicken.x = 64;
+        // this.chicken.y = 64;
+        // this.chicken.visible = true;
+        // this.chicken.setOrigin(0.5, 0.5);
 
         
 
@@ -106,9 +106,12 @@ export class StageScene extends Phaser.Scene {
         // this.cameras.main.setBounds(0, 0, 999999, 999999);
         //this.bg = this.add.tileSprite(64, 0, 16, 16, 'floor');
 
+        // var tileset = map.addTilesetImage('floor');
+        // var layer = map.createLayer(0, tileset, 0, 0);
+        // map.createLayer()
+        // console.log(layer);
 
         // Sprite character animations
-
         const playerIdleAnimation = {
             key: 'playerIdle',
             frames: this.anims.generateFrameNames('playerIdle'),
@@ -136,11 +139,6 @@ export class StageScene extends Phaser.Scene {
             frameRate: 6,
             repeat: -1
         }; this.anims.create(orcNormalRunAnimation);
-
-        // var tileset = map.addTilesetImage('floor');
-        // var layer = map.createLayer(0, tileset, 0, 0);
-        // map.createLayer()
-        // console.log(layer);
     
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -183,14 +181,15 @@ export class StageScene extends Phaser.Scene {
             this.enemies.add(enemy);
         }
 
-
-        this.orc = this.physics.add.sprite(0, 0);
-        this.orc.body.setOffset(16, 32);
-        this.orc.anims.play('orcNormalRun');
-        this.orc.depth = 1;
+        // this.orc = this.physics.add.sprite(0, 0);
+        // this.orc.body.setOffset(16, 32);
+        // this.orc.anims.play('orcNormalRun');
+        // this.orc.depth = 1;
         
         this.player = this.physics.add.sprite(0, 0);
         this.player.xp = 0;
+        this.player.health = 100;
+        this.player.level = 1;
         //this.player.setColliderWorldBounds(true);
         this.player.anims.play('playerIdle');
         //this.player.body.setOffset(this.player.width / 2, this.player.height / 2);
@@ -211,27 +210,71 @@ export class StageScene extends Phaser.Scene {
         //this.physics.add.collider(this.player, this.chicken);
         
         //this.time = new Phaser.Time.Clock(this);
-        var xpGemThis = this;
 
+        // Items
+        var xpGemThis = this;
         var spawnItem = function(x, y) {
-            var xpGem = xpGemThis.physics.add.image(64, 64, 'xpGem');
-            xpGem.depth = 1;
-            xpGem.x = x;
-            xpGem.y = y;
-            xpGem.setOrigin(0.5, 0.5);
-            xpGemThis.physics.add.overlap(xpGem, xpGemThis.player, function(gem, player) {
-                gem.destroy();
-            })
+            if (Math.random(1) <= 0.99) {
+                var xpGem = xpGemThis.physics.add.image(64, 64, 'xpGem');
+                xpGem.depth = 1;
+                xpGem.x = x;
+                xpGem.y = y;
+                
+                xpGem.setOrigin(0.5, 0.5);
+                xpGemThis.physics.add.overlap(xpGem, xpGemThis.player, function(gem, player) {
+                    gem.destroy();
+                })
+                xpGemThis.updateXp(10);
+            }
+            else {
+                var chicken = xpGemThis.physics.add.image(64, 64, 'chicken');
+                chicken.depth = 1;
+                chicken.x = x;
+                chicken.y = y;
+                chicken.setOrigin(0.5, 0.5);
+                xpGemThis.physics.add.overlap(chicken, xpGemThis.player, function(chicken, player) {
+                    chicken.destroy();
+                })
+                xpGemThis.updateHealth(10);
+            }
+            
         }
+        var immortal = false;
+        this.physics.add.overlap(this.player, this.enemies.getChildren(), function (player, enemy) {
+            if (immortal) {
+                return;
+            }
+            xpGemThis.updateHealth(-5);
+            if (player.health <= 0) {
+                player.die();
+            }
+            var that = this;
+            immortal = true;
+            xpGemThis.tweens.add({
+                targets: player,
+                alpha: 0.5,
+                duration: 2000,
+                onComplete: function () {
+                    xpGemThis.tweens.add({
+                        targets: player,
+                        alpha: 1,
+                        duration: 2000,
+                        onComplete: function () {
+                            immortal = false;
+                        }
+                    });
+                }
+            });
+        });
+            
 
         this.physics.add.overlap(this.radialAura, this.enemies.getChildren(), function (aura, enemy) {
-            console.log("epic");
             enemy.takeDamage(1)
             if (enemy.health <= 0) {
                 enemy.die();
                 spawnItem(enemy.x, enemy.y);
             }
-        })
+        });
         var that = this.enemies;
         var aura = this.radialAura;
         var net = this;
@@ -307,7 +350,6 @@ export class StageScene extends Phaser.Scene {
         
     }
 
-
     getChunk(x, y) {
         var chunk = null;
         for (var i = 0; i < this.chunks.length; i++) {
@@ -319,11 +361,34 @@ export class StageScene extends Phaser.Scene {
     }
 
     dropItem(x, y) {
-
     }
 
     pickUpItem(item) {
 
+    }
+
+    updateHealth(value) {
+        console.log(this.player.health);
+        if (this.player.health + value >= 100) {
+            this.player.health = 100;
+        }
+        else {
+            this.player.health += value;
+        }
+        this.game.scene.getScene("UI").healthBar.setValue(this.player.health / 100);
+    }
+
+    updateXp(value) {
+        this.player.xp += value
+        if (this.player.xp + value >= 100) {
+            this.player.xp = 0;
+            this.player.level++;
+        }
+        else {
+            this.player.xp += value;
+        }
+        this.game.scene.getScene("UI").xpBar.setValue(this.player.xp / 100);
+        this.game.scene.getScene("UI").levelText.setText('Lvl. ' + this.player.level);
     }
 
     update () 

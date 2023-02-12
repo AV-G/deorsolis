@@ -109,15 +109,15 @@ export class UIScene extends Phaser.Scene {
         //this.timeText.setText("00:" + Math.round(this.clock.now / 1000));
 
         // Check for level up
-        if (this.xpBar.value == 1) {
-            this.xpBar.value = 0;
-            this.levelText.text = "Lvl. " + (parseInt(this.levelText.text.substring(4)) + 1);
-            this.upgradeHealth.setVisible(true);
-            this.upgradeHealthText.setVisible(true);
-            this.upgradeStrengthText.setVisible(true);
-            this.upgradeStrength.setVisible(true);
-        }
-        console.log(this.xpBar.value);
+        // if (this.xpBar.value == 1) {
+        //     this.xpBar.value = 0;
+        //     this.levelText.text = "Lvl. " + (parseInt(this.levelText.text.substring(4)) + 1);
+        //     this.upgradeHealth.setVisible(true);
+        //     this.upgradeHealthText.setVisible(true);
+        //     this.upgradeStrengthText.setVisible(true);
+        //     this.upgradeStrength.setVisible(true);
+        // }
+        // console.log(this.xpBar.value);
     }
 
     
