@@ -23,28 +23,18 @@ export class Chunk {
                     var tileX = (this.x * (this.scene.chunkSize * this.scene.tileSize)) + (x * this.scene.tileSize);
                     var tileY = (this.y * (this.scene.chunkSize * this.scene.tileSize)) + (y * this.scene.tileSize);
 
-                   //- var perlinValue = noise.perlin2(tileX / 100, tileY / 100);
+                    var perlinValue = noise.perlin2(tileX / 100, tileY / 100);
                     var key = "";
-                    var animationKey = "";
-
-                    // if (perlinValue < 0.2) {
-                    //     key = "sprWater";
-                    //     animationKey = "sprWater";
-                    // }
-                    // else if (perlinValue >= 0.2 && perlinValue < 0.3) {
-                    //     key = "sprSand";
-                    // }
-                    // else if (perlinValue >= 0.3) {
-                    //     key = "sprGrass";
-                    // }
-
-                    var tile = new Tile(this.scene, tileX, tileY, "demoTile");
-
-                    if (animationKey !== "") {
-                        tile.play(animationKey);
+                    if (perlinValue < 0.2) {
+                        this.tiles.add(new Tile(this.scene, tileX, tileY, "grassTile1"));
+                    }
+                    else if (perlinValue >= 0.2 && perlinValue < 0.3) {
+                        this.tiles.add(new Tile(this.scene, tileX, tileY, "grassTile2"));
+                    }
+                    else if (perlinValue >= 0.3) {
+                        this.tiles.add(new Tile(this.scene, tileX, tileY, "dirtOnGrassTile"));
                     }
 
-                    this.tiles.add(tile);
                     this.isLoaded = true;
                 }
             }

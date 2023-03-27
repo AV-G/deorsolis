@@ -27,7 +27,7 @@ const config = {
         }
     },
     scale: {
-        mode: Phaser.Scale.RESIZE, // you can find another types in Phaser.Scale.ScaleModeType: RESIZE | FIT | ENVELOP ...
+        mode: Phaser.Scale.FIT, // you can find another types in Phaser.Scale.ScaleModeType: RESIZE | FIT | ENVELOP ...
         autoCenter: Phaser.Scale.CENTER_BOTH,
     }
     

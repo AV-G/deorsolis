@@ -1,7 +1,7 @@
 import { CST } from "../CST.js";
 import { Chunk } from "../classes/Chunk.js";
 import { UIScene } from "./UIScene.js";
-//import { Spawner } from "../classes/Spawner.js"
+import { Spawner } from "../classes/Spawner.js"
 
 
 export class StageScene extends Phaser.Scene {
@@ -15,6 +15,22 @@ export class StageScene extends Phaser.Scene {
         
     }
 
+    spawner() {
+        // Phase one 2 minutes: orcs, orc rogue
+
+
+        // Phase two 5 minutes:  orcs, orc rogue, skeleton
+
+        
+        // Phase three 5 minutes: orcs, orc rogue, skeleton, orc shaman
+
+
+        // Phase four 5 minutes: all orcs, skeleton, skeleton mage
+
+
+        // Phase five 3 minutes: all orcs, all skeletons
+    }
+
     preload () 
     {
 
@@ -24,8 +40,14 @@ export class StageScene extends Phaser.Scene {
         this.load.spritesheet('playerIdle', '/assets/heroes/knight/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('playerWeapon', '/assets/weapons/Hands.png', { frameWidth: 16, frameHeight: 16});
 
+        // Background assets
         this.load.image('floor', '/assets/environments/dungeon/Tiles.png', {frameWidth: 16, frameHeight: 16});
         this.load.image('demoTile', '/assets/environments/dungeon/Tile.png', {frameWidth: 16, frameHeight: 16});
+        this.load.image('tiles', '/assets/environments/woods/Tiles.png', {frameWidth: 16, frameHeight: 16});
+        this.load.image('grassTile1', '/assets/environments/woods/grassTile1.png', {frameWidth: 48, frameHeight: 48});
+        this.load.image('grassTile2', '/assets/environments/woods/grassTile2.png', {frameWidth: 48, frameHeight: 48});
+        this.load.image('dirtOnGrassTile', '/assets/environments/woods/dirtOnGrassTile.png', {frameWidth: 48, frameHeight: 48});
+        
 
         // Enemy animations
         this.load.spritesheet('orcNormalRun', '/assets/enemies/orc/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
@@ -36,15 +58,17 @@ export class StageScene extends Phaser.Scene {
         this.load.spritesheet('skeletonMageRun', '/assets/enemies/skeleton_mage/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
         this.load.spritesheet('skeletonWarriorRun', '/assets/enemies/skeleton_warrior/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
 
-
         // Weapons
         this.load.spritesheet('radialAura', '/assets/effects/radius_spritesheet.png', { frameWidth: 100, frameHeight: 100});
+        this.load.image('axe', '/assets/weapons/axe.png');
+        this.load.image('blade', '/assets/weapons/blade.png');
+
+        // Effects
 
         // Items
         this.load.image('chicken', '/assets/items/chicken.png', {frameWidth: 16, frameHeight: 16});
         this.load.audio('pickup', '../assets/sounds/effects/powerUp.wav');
         this.load.image('xpGem', '/assets/items/xp_gem.png');
-        this.load.image('model', '/assets/items/suzanne.obj')
     }
     
     create () 
@@ -54,22 +78,21 @@ export class StageScene extends Phaser.Scene {
 
         // Chunk definitions
         this.chunkSize = 16;
-        this.tileSize = 16;
+        this.tileSize = 48;
         this.chunks = [];
 
-
-
-        //this.xpVisibility = true;
-        // this.chickenVisibility = true;
-        
-        // this.chicken = this.add.image(64, 64, 'chicken');
-        // this.chicken.depth = 1;
-        // this.chicken.x = 64;
-        // this.chicken.y = 64;
-        // this.chicken.visible = true;
-        // this.chicken.setOrigin(0.5, 0.5);
-
-        
+        // Pause logic
+        this.input.keyboard.on('keydown-ESC', () => {
+            if (this.scene.isPaused()) {
+                this.scene.resume();
+            }
+            else {
+                console.log(this.game.scene);
+                this.game.scene.getScene("UI").showPauseScreen();
+                this.scene.isPaused();
+                this.scene.pause();
+            }
+        });
 
         let radialAuraSprite = {
             key: 'radialAura',
@@ -83,6 +106,16 @@ export class StageScene extends Phaser.Scene {
         this.radialAura.depth = 1;
         this.radialAura.setSize(64, 64);
 
+
+        let projectiles = this.physics.add.group({
+            allowGravity: false,
+            immovable: true,
+        })
+
+
+        this.throwingKnife = this.physics.add.sprite(0, 0, 'blade');
+        this.throwingKnife.enabled = false;
+        this.throwingKnife.depth = 1;
 
 
         // var mapData = [];
@@ -188,7 +221,9 @@ export class StageScene extends Phaser.Scene {
         
         this.player = this.physics.add.sprite(0, 0);
         this.player.xp = 0;
+        this.player.maxXp = 100;
         this.player.health = 100;
+        this.player.maxHealth = 100;
         this.player.level = 1;
         //this.player.setColliderWorldBounds(true);
         this.player.anims.play('playerIdle');
@@ -214,16 +249,17 @@ export class StageScene extends Phaser.Scene {
         // Items
         var xpGemThis = this;
         var spawnItem = function(x, y) {
-            if (Math.random(1) <= 0.99) {
+            if (Math.random(1) <= 0.9999) {
                 var xpGem = xpGemThis.physics.add.image(64, 64, 'xpGem');
                 xpGem.depth = 1;
                 xpGem.x = x;
                 xpGem.y = y;
-                
                 xpGem.setOrigin(0.5, 0.5);
                 xpGemThis.physics.add.overlap(xpGem, xpGemThis.player, function(gem, player) {
                     gem.destroy();
                 })
+                xpGem.setScale(0.5);
+                xpGem.setSize(0.5);
                 xpGemThis.updateXp(10);
             }
             else {
@@ -303,6 +339,20 @@ export class StageScene extends Phaser.Scene {
 
     }
 
+    throwProjectile() {
+        let projectile = this.projectiles.create(this.player.x, this.player.y, 'projectile');
+        projectile.direction = this.player.direction;
+        projectile.damage = 10;
+        projectile.setVelocityX(projectile.direction === "right" ? 300 : -300);
+        //projectile.setColliderWorldBounds(true);
+        this.physics.add.collider(projectile, this.enemies, function(projectile, enemy) {
+            enemy.health -= 10;
+            projectile.destroy();
+        })
+        //projectile.setBounce(1, 1);
+        this.player.lastThrownTime = Date.now();
+    }
+
     followPlayer(enemy) {
         var distance = Phaser.Math.Distance.Between(enemy.x, enemy.y, this.player.x, this.player.y);
 
@@ -323,7 +373,7 @@ export class StageScene extends Phaser.Scene {
             enemy.body.velocity.x = 0;
             enemy.body.velocity.y = 0;
         }
-        
+
     }
 
     avoidOverlap(enemy1, enemy2) {
@@ -393,6 +443,12 @@ export class StageScene extends Phaser.Scene {
 
     update () 
     {
+
+        // Throwing knife
+        if (Date.now() - this.player.lastThrownTime > 1000) {
+            this.throwProjectile();
+        }
+
 
         this.enemies.getChildren().forEach(this.followPlayer, this);
         //this.enemies.getChildren().forEach(this.avoidOverlap, this);
@@ -611,10 +667,10 @@ export class StageScene extends Phaser.Scene {
     }
 }
 
-var map;
-var text;
-var sx = 0;
-var mapWidth = 51;
-var mapHeight = 37;
-var distance = 0;
-var tiles = [20];
+// var map;
+// var text;
+// var sx = 0;
+// var mapWidth = 51;
+// var mapHeight = 37;
+// var distance = 0;
+// var tiles = [20];
