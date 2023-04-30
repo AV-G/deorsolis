@@ -12,13 +12,14 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('background', '../assets/ui/title_screen.png');
         this.load.image('uiAtlas', '../assets/ui/gui.png');
         this.load.image('button', '../assets/ui/buttonDefault.png');
-        this.load.image('buttonHover', '../assets/ui/buttonHover.png')
-        this.load.image('buttonPressed', '../assets/ui/buttonPressed.png')
+        this.load.image('buttonHover', '../assets/ui/buttonHover.png');
+        this.load.image('buttonPressed', '../assets/ui/buttonPressed.png');
         this.load.image('menuContainerTop', '../assets/ui/menuContainerTop.png');
         this.load.image('menuContainerMiddle', '../assets/ui/menuContainerMiddle.png');
         this.load.image('menuContainerBottom', '../assets/ui/menuContainerBottom.png');
         this.load.image('infoContainer', '../assets/ui/infoContainer.png');
         this.load.image('itemContainer', '../assets/ui/itemButton.png');
+        this.load.image('itemContainerHover', '../assets/ui/itemButtonHover.png');
         this.load.image('lock', '../assets/ui/lock.png');
         this.load.image('arrowButton', '../assets/ui/arrowButton.png');
         this.load.image('upgradeContainer', '../assets/ui/upgradeBackground.png');
@@ -115,14 +116,16 @@ export class MenuScene extends Phaser.Scene {
         const bg = this.add.image(0, 0, 'background');
         bg.setOrigin(0);
         bg.setScale(this.cameras.main.width / bg.width, this.cameras.main.height / bg.height);
-        
-        // Create title text
-        this.titleText = this.add.text(this.sys.game.canvas.width / 2, 200, 'DEORSOLIS', { font: '64px minimalPixel', fill: '#272B42', stroke: '#FFFFFF', strokeThickness: 10 });
-        this.titleText.setOrigin(0.5, 0.5);
 
         // Set menu music
         this.music = this.sound.add('menuMusic', { volume: 0.3, loop: true });
         this.music.play();
+
+
+        //// UI FOR MAIN MENU
+        // Create title text
+        this.titleText = this.add.text(this.sys.game.canvas.width / 2, 200, 'DEORSOLIS', { font: '64px minimalPixel', fill: '#272B42', stroke: '#FFFFFF', strokeThickness: 10 });
+        this.titleText.setOrigin(0.5, 0.5);
 
         // Create container
         this.menuContainerTop = this.add.image(this.sys.game.canvas.width / 2, 300 + 4, 'menuContainerTop');
@@ -184,6 +187,7 @@ export class MenuScene extends Phaser.Scene {
                 for (let j = 0; j < 3; j++) {
                     let lockedItem = this.add.image(300 + (i * 200), 260 + (j * 150), 'itemContainer');
                     lockedItem.setScale(10);
+            
                     this.unlocksGroup.push(lockedItem);
                     let lock = this.add.image(300 + (i * 200), 250 + (j * 150), 'lock');
                     lock.setScale(9);
@@ -212,6 +216,12 @@ export class MenuScene extends Phaser.Scene {
             }, this);
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 675, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
+            this.backButton.on('pointerover', () => {
+                this.backButton.setTexture('buttonHover');
+            })
+            this.backButton.on('pointerout', () => {
+                this.backButton.setTexture('button');
+            })
 
             this.showHelpMenu();
             this.hideMainMenu();
@@ -259,6 +269,12 @@ export class MenuScene extends Phaser.Scene {
             }, this);
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 675, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
+            this.backButton.on('pointerover', () => {
+                this.backButton.setTexture('buttonHover');
+            })
+            this.backButton.on('pointerout', () => {
+                this.backButton.setTexture('button');
+            })
 
             this.hideMainMenu();
 
@@ -316,6 +332,12 @@ export class MenuScene extends Phaser.Scene {
             }, this);
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 675, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
+            this.backButton.on('pointerover', () => {
+                this.backButton.setTexture('buttonHover');
+            })
+            this.backButton.on('pointerout', () => {
+                this.backButton.setTexture('button');
+            })
 
             this.hideMainMenu();
 
@@ -352,24 +374,16 @@ export class MenuScene extends Phaser.Scene {
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 600, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
             this.backButton.on('pointerdown', () => {
-                // hide back button and credits text
-                // this.backButton.setVisible(false);
-                // this.backButtonText.setVisible(false);
-                // this.soundButton.setVisible(false);
-                // this.soundButtonText.setVisible(false);
-
-                // show start game and credits buttons
-                // startGameButton.setVisible(true);
-                // creditsButton.setVisible(true);
-                // startGameButtonText.setVisible(true);
-                // creditsButtonText.setVisible(true);
-                // settingsButton.setVisible(true);
-                // settingsButtonText.setVisible(true);
                 this.hideSettingsMenu();
                 this.showMainMenu();
 
-                
             }, this);
+            this.backButton.on('pointerover', () => {
+                this.backButton.setTexture('buttonHover');
+            })
+            this.backButton.on('pointerout', () => {
+                this.backButton.setTexture('button');
+            })
 
             // create sound button
             this.soundButton = this.add.image(this.sys.game.canvas.width / 2, 400, 'button').setInteractive();
@@ -387,7 +401,15 @@ export class MenuScene extends Phaser.Scene {
                 }
             }, this);
             this.soundButtonText;
+            this.soundButton.on('pointerover', () => {
+                this.soundButton.setTexture('buttonHover');
+            })
+            this.soundButton.on('pointerout', () => {
+                this.soundButton.setTexture('button');
+            })
 
+
+            // Save the settings in local storage
             if (localStorage.getItem("soundSetting") !== null) {
                 let value = JSON.parse(localStorage.getItem("soundSetting"));
                 if (value) {
@@ -401,13 +423,18 @@ export class MenuScene extends Phaser.Scene {
                 this.soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 400, 'Sound: On', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
                 localStorage.setItem("soundSetting", true);
             }
+
+            
             this.soundButtonText.setOrigin(0.5, 0.5);
 
 
-            // Hide start game and credits buttons
+        // Hide start game and credits buttons
         }, this);
         
-
+        if (localStorage.getItem("newSession") === null) {
+            this.helpButton.emit('pointerdown', this.helpButton.input.pointer);
+            localStorage.setItem("newSession", true);
+        }
         
         
         

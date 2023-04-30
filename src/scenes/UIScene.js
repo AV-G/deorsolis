@@ -15,6 +15,7 @@ export class UIScene extends Phaser.Scene {
         this.load.plugin('rexclockplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexclockplugin.min.js', true);
         this.load.image('sand_clock', '/assets/ui/sand_clock.png', {frameWidth: 32, frameHeight: 32});
         this.load.image('button', '../assets/ui/button.png');
+        this.load.image('buttonHover', '../assets/ui/buttonHover.png')
         this.load.image('menuContainerTop', '../assets/ui/menuContainerTop.png');
         this.load.image('menuContainerMiddle', '../assets/ui/menuContainerMiddle.png');
         this.load.image('menuContainerBottom', '../assets/ui/menuContainerBottom.png');
@@ -40,39 +41,81 @@ export class UIScene extends Phaser.Scene {
         this.menuContainerMiddle2.setVisible(true);
         this.menuContainerMiddle3.setVisible(true);
         this.menuContainerBottom.setVisible(true);
-        this.firstItem.setVisible(true);
-        this.firstItemText.setVisible(true);
-        this.secondItem.setVisible(true);
-        this.secondItemText.setVisible(true);
-        this.thirdItem.setVisible(true);
-        this.thirdItemText.setVisible(true);
+        
+        if (this.uniqueValues.length >= 1) {
+            this.firstItem.setVisible(true);
+            this.firstItemText.setVisible(true);
+            this.firstItemText.text = this.uniqueValues[0];
+        }
+        if (this.uniqueValues.length >= 2) {
+            this.secondItem.setVisible(true);
+            this.secondItemText.setVisible(true);
+            this.secondItemText.text = this.uniqueValues[1];
+        }
+        if (this.uniqueValues.length >= 3) {
+            this.thirdItem.setVisible(true);
+            this.thirdItemText.setVisible(true);
+            this.thirdItemText.text = this.uniqueValues[2];
+        }
+        this.uniqueValues = new Array();
+        for (let i = 0; i < 3; i++) {
+            // get a random index
+            const index = Math.floor(Math.random() * this.unlocks.length);
+            
+            // get the value at that index
+            const value = this.unlocks[index];
+            
+            // add the value to the uniqueValues array if it hasn't already been added
+            if (!this.uniqueValues.includes(value)) {
+              this.uniqueValues.push(value);
+            }
+            
+            // remove the value from the unlocks array
+            this.unlocks.splice(index, 1);
+          }
     }
 
 
     showDeathScreen() {
-
+        this.overlay.setVisible(true);
+        this.deathText.setVisible(true);
+        this.menuButton.setVisible(true);
+        this.menuButtonText.setVisible(true);
     }
 
     hideDeathScreen() {
-
+        this.overlay.setVisible(false);
+        this.deathText.setVisible(false);
+        this.menuButton.setVisible(false);
+        this.menuButtonText.setVisible(false);
     }
 
     showPauseScreen() {
         this.overlay.setVisible(true);
         this.pauseText.setVisible(true);
+        this.menuButton.setVisible(true);
+        this.menuButtonText.setVisible(true);
     }
 
     hidePauseScreen() {
         this.overlay.setVisible(false);
         this.pauseText.setVisible(false);
+        this.menuButton.setVisible(false);
+        this.menuButtonText.setVisible(false);
     }
 
     showWinScreen() {
-
+        this.overlay.setVisible(true);
+        this.winText.setVisible(true);
+        this.menuButton.setVisible(true);
+        this.menuButtonText.setVisible(true);
     }
 
     hideWinScreen() {
-
+        this.overlay.setVisible(false);
+        this.winText.setVisible(false);
+        this.menuButton.setVisible(false);
+        this.menuButtonText.setVisible(false);
     }
 
     create() {
@@ -100,15 +143,36 @@ export class UIScene extends Phaser.Scene {
         this.menuContainerBottom = this.add.image(this.sys.game.canvas.width / 2, 550 - 4, 'menuContainerBottom');
         this.menuContainerBottom.setScale(6);
 
+        // Main menu button
+        this.menuButton = this.add.image(this.sys.game.canvas.width / 2, 425, 'button').setInteractive();
+        this.menuButtonText = this.add.text(this.sys.game.canvas.width / 2, 425, 'Main Menu', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        this.menuButtonText.setOrigin(0.5, 0.5);
+        this.menuButton.setScale(4.5);
+        this.menuButton.on('pointerdown', () => {
+            this.game.scene.getScene(CST.SCENES.MENU).music.stop();
+            this.game.scene.getScene(CST.SCENES.MENU).scene.stop();
+            this.scene.start(CST.SCENES.MENU);
+            this.game.scene.getScene("UI").scene.stop();
+            this.game.scene.getScene("STAGE").scene.stop();
+        }, this);
+        this.menuButton.setVisible(false);
+        this.menuButtonText.setVisible(false);
+
+        this.menuButton.setDepth(3);
+        this.menuButtonText.setDepth(3);
+
         // Create death screen
         this.deathText = this.add.text(this.sys.game.canvas.width / 2, 200, 'YOU PERISHED', { font: '64px minimalPixel', fill: '#97251F', stroke: '#FFFFFF', strokeThickness: 10 });
         this.deathText.setOrigin(0.5, 0.5);
         this.deathText.setVisible(false);
+        this.deathText.setDepth(3);
 
         // Create win screen
         this.winText = this.add.text(this.sys.game.canvas.width / 2, 200, 'YOU SURVIVED', { font: '64px minimalPixel', fill: '#2EB247', stroke: '#FFFFFF', strokeThickness: 10 });
         this.winText.setOrigin(0.5, 0.5);
         this.winText.setVisible(false);
+        this.winText.setDepth(3);
+
 
         // Create pause screen 
         this.pauseText = this.add.text(this.sys.game.canvas.width / 2, 200, 'PAUSED', { font: '64px minimalPixel', fill: '#272B42', stroke: '#FFFFFF', strokeThickness: 10 });
@@ -120,9 +184,28 @@ export class UIScene extends Phaser.Scene {
         this.overlay = this.add.graphics().fillStyle(0x000000, 0.5).fillRect(0, 0, this.game.config.width, this.game.config.height);
         this.overlay.setDepth(2);
         this.overlay.setVisible(false);
+        this.unlocks = ["Health", "Health", "Health", "Health", "Health", "Speed", "Speed","Speed","Speed","Speed", "Strength", "Strength", "Strength", "Radial", "Radial", "Radial", "Knife", "Knife", "Knife", "Axe", "Axe", "Axe"]
 
+        this.uniqueValues = new Array();
         
+        this.paused = false;
 
+        for (let i = 0; i < 3; i++) {
+            // get a random index
+            const index = Math.floor(Math.random() * this.unlocks.length);
+            
+            // get the value at that index
+            const value = this.unlocks[index];
+            
+            // add the value to the uniqueValues array if it hasn't already been added
+            if (!this.uniqueValues.includes(value)) {
+              this.uniqueValues.push(value);
+            }
+            
+            // remove the value from the unlocks array
+            this.unlocks.splice(index, 1);
+          }
+        console.log(this.uniqueValues);
         // Create three empty upgrade buttons
         this.firstItem = this.add.image(this.sys.game.canvas.width / 2, 350, 'button').setInteractive();
         this.firstItemText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Item 1', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
@@ -130,7 +213,16 @@ export class UIScene extends Phaser.Scene {
         this.firstItem.setScale(4.5);
         this.firstItem.on('pointerdown', function() {
             this.hideUpgradeMenu();
+            this.game.scene.getScene("STAGE").scene.resume();
+            this.game.scene.getScene("STAGE").unlockItem(this.firstItemText.text);
+            this.clock.resume();
         }, this);
+        this.firstItem.on('pointerover', () => {
+            this.firstItem.setTexture('buttonHover');
+        })
+        this.firstItem.on('pointerout', () => {
+            this.firstItem.setTexture('button');
+        })
 
         this.secondItem = this.add.image(this.sys.game.canvas.width / 2, 425, 'button').setInteractive();
         this.secondItemText = this.add.text(this.sys.game.canvas.width / 2, 425, 'Item 2', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
@@ -138,7 +230,16 @@ export class UIScene extends Phaser.Scene {
         this.secondItem.setScale(4.5);
         this.secondItem.on('pointerdown', () => {
             this.hideUpgradeMenu();
+            this.game.scene.getScene("STAGE").scene.resume();
+            this.game.scene.getScene("STAGE").unlockItem(this.secondItemText.text);
+            this.clock.resume();
         }, this);
+        this.secondItem.on('pointerover', () => {
+            this.secondItem.setTexture('buttonHover');
+        })
+        this.secondItem.on('pointerout', () => {
+            this.secondItem.setTexture('button');
+        })
 
         this.thirdItem = this.add.image(this.sys.game.canvas.width / 2, 500, 'button').setInteractive();
         this.thirdItemText = this.add.text(this.sys.game.canvas.width / 2, 500, 'Item 3', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
@@ -146,7 +247,16 @@ export class UIScene extends Phaser.Scene {
         this.thirdItem.setScale(4.5);
         this.thirdItem.on('pointerdown', () => {
             this.hideUpgradeMenu();
+            this.game.scene.getScene("STAGE").scene.resume();
+            this.game.scene.getScene("STAGE").unlockItem(this.thirdItemText.getText);
+            this.clock.resume();
         }, this);
+        this.thirdItem.on('pointerover', () => {
+            this.thirdItem.setTexture('buttonHover');
+        })
+        this.thirdItem.on('pointerout', () => {
+            this.thirdItem.setTexture('button');
+        })
         
         this.hideUpgradeMenu();
 
@@ -167,9 +277,12 @@ export class UIScene extends Phaser.Scene {
         // Pause logic
         this.input.keyboard.on('keydown-ESC', () => {
             console.log(this.game.scene);
-            if (this.game.scene.getScene("STAGE").scene.isPaused()) {
-                this.game.scene.getScene("STAGE").scene.resume()
+
+            if (this.game.scene.getScene("STAGE").scene.isPaused() && this.paused) {
+                this.game.scene.getScene("STAGE").scene.resume();
+                this.clock.resume();
                 this.hidePauseScreen();
+                this.paused = false;
             }
         });
 
@@ -186,7 +299,7 @@ export class UIScene extends Phaser.Scene {
         this.clock.start();
 
         // Add the health bar at the bottom
-        this.healthBar = this.add.rexLineProgress(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2 + 325, 500, 20, 0xFF0000, 0.5, {    
+        this.healthBar = this.add.rexLineProgress(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2 + 325, 500, 20, 0xFF0000, 1, {    
             trackColor: "white",
             trackStrokeColor: "white",
             trackStrokeThickness: 5,
@@ -228,6 +341,13 @@ export class UIScene extends Phaser.Scene {
         this.levelText.depth = 1;
     }
 
+    checkTime() {
+        if (this.clock.now >= 600000) {
+            this.game.scene.getScene("STAGE").scene.pause();
+            this.showWinScreen();
+        }
+    }
+
 
     update() {
         // Rotate the sand clock image
@@ -235,6 +355,7 @@ export class UIScene extends Phaser.Scene {
 
         // 
         this.timeText.setText(formatTime(Math.round(this.clock.now / 1000)));
+        this.checkTime();
         //this.timeText.setText("00:" + Math.round(this.clock.now / 1000));
 
         // Check for level up
@@ -244,7 +365,7 @@ export class UIScene extends Phaser.Scene {
         }
 
         if (this.healthBar.value == 0) {
-            console.log("you died");
+            //console.log("you died");
         }
         //     
         //     this.upgradeHealth.setVisible(true);

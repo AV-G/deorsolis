@@ -15,20 +15,384 @@ export class StageScene extends Phaser.Scene {
         
     }
 
+    getRndInteger(min, max) {
+        return Math.floor(Math.random() * (max - min) ) + min;
+    }
+
     spawner() {
         // Phase one 2 minutes: orcs, orc rogue
+        if (this.game.scene.getScene("UI").clock.now >= 0 && this.game.scene.getScene("UI").clock.now <= 60000) {
+            if (this.enemies.getChildren().length <= 75) {
+                const selection = this.getRndInteger(0, 2);
+                console.log(selection);
+                let spawnX, spawnY;
+                let side = Phaser.Math.Between(1, 4); // choose a random side of the screen to spawn the enemy
+                if (side === 1) { // spawn above the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = -50;
+                } else if (side === 2) { // spawn below the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = this.game.config.height + 50;
+                } else if (side === 3) { // spawn to the left of the screen
+                spawnX = -50;
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                } else { // spawn to the right of the screen
+                spawnX = this.game.config.width + 50
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                }
+                spawnX -= 400;
+                spawnY -= 400;
+                let enemy = this.physics.add.sprite(spawnX, spawnY);
 
+
+                // Boilerplate variables
+                enemy.body.setVelocity(0);
+                enemy.depth = 1;
+                enemy.body.setSize(16, 32);
+                enemy.body.setOffset(24, 32);
+                if (selection == 0) {
+                    enemy.anims.play('orcShamanRun');
+                    enemy.health = 75;
+                }
+                else {
+                    enemy.anims.play('orcNormalRun');
+                    enemy.health = 50;
+                }
+
+                // Stats and functions
+                var net = this;
+                enemy.takeDamage = function(damage) {
+                    this.health -= damage;
+                    
+                    var dat = this;
+                    net.tweens.add({
+                        targets: this,
+                        alpha: 0.5,
+                        duration: 100,
+                        onComplete: function () {
+                        net.tweens.add({
+                            targets: dat,
+                            alpha: 1,
+                            duration: 100
+                        });
+                        }
+                    });
+                }
+                enemy.die = function(enemies) {
+                    //this.spawnItem(this.x, this.y);
+                    this.destroy();
+                }
+                this.enemies.add(enemy);
+            }
+        }                
 
         // Phase two 5 minutes:  orcs, orc rogue, skeleton
+        if (this.game.scene.getScene("UI").clock.now >= 60000 && this.game.scene.getScene("UI").clock.now <= 180000) {
+            if (this.enemies.getChildren().length <= 75) {
+                const selection = this.getRndInteger(0, 4);
+                console.log(selection);
+                let spawnX, spawnY;
+                let side = Phaser.Math.Between(1, 4); // choose a random side of the screen to spawn the enemy
+                if (side === 1) { // spawn above the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = -50;
+                } else if (side === 2) { // spawn below the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = this.game.config.height + 50;
+                } else if (side === 3) { // spawn to the left of the screen
+                spawnX = -50;
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                } else { // spawn to the right of the screen
+                spawnX = this.game.config.width + 50
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                }
 
+                spawnX -= 400;
+                spawnY -= 400;
+                let enemy = this.physics.add.sprite(spawnX, spawnY);
+
+
+                // Boilerplate variables
+                enemy.body.setVelocity(0);
+                enemy.depth = 1;
+                enemy.body.setSize(16, 32);
+                enemy.body.setOffset(24, 32);
+                if (selection == 0) {
+                    enemy.anims.play('orcShamanRun');
+                    enemy.health = 75;
+                }
+                else if (selection == 1) {
+                    enemy.anims.play('orcNormalRun');
+                    enemy.health = 50;
+                }
+                else if (selection == 2) {
+                    enemy.anims.play('skeletonNormalRun');
+                    enemy.health = 100;
+                }
+                else {
+                    enemy.anims.play('skeletonRogueRun');
+                    enemy.health = 100;
+                }
+                
+
+                // Stats and functions
+                var net = this;
+                enemy.takeDamage = function(damage) {
+                    this.health -= damage;
+                    
+                    var dat = this;
+                    net.tweens.add({
+                        targets: this,
+                        alpha: 0.5,
+                        duration: 100,
+                        onComplete: function () {
+                        net.tweens.add({
+                            targets: dat,
+                            alpha: 1,
+                            duration: 100
+                        });
+                        }
+                    });
+                }
+                enemy.die = function(enemies) {
+                    //this.spawnItem(this.x, this.y);
+                    this.destroy();
+                }
+                this.enemies.add(enemy);
+            }
+        }
         
         // Phase three 5 minutes: orcs, orc rogue, skeleton, orc shaman
+        if (this.game.scene.getScene("UI").clock.now >= 180000 && this.game.scene.getScene("UI").clock.now <= 360000) {
+            if (this.enemies.getChildren().length <= 75) {
+                const selection = this.getRndInteger(0, 4);
+                console.log(selection);
+                let spawnX, spawnY;
+                let side = Phaser.Math.Between(1, 4); // choose a random side of the screen to spawn the enemy
+                if (side === 1) { // spawn above the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = -50;
+                } else if (side === 2) { // spawn below the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = this.game.config.height + 50;
+                } else if (side === 3) { // spawn to the left of the screen
+                spawnX = -50;
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                } else { // spawn to the right of the screen
+                spawnX = this.game.config.width + 50
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                }
 
+                spawnX -= 400;
+                spawnY -= 400;
+                let enemy = this.physics.add.sprite(spawnX, spawnY);
+
+
+                // Boilerplate variables
+                enemy.body.setVelocity(0);
+                enemy.depth = 1;
+                enemy.body.setSize(16, 32);
+                enemy.body.setOffset(24, 32);
+                if (selection == 0) {
+                    enemy.anims.play('skeletonNormalRun');
+                    enemy.health = 75;
+                }
+                else if (selection == 1) {
+                    enemy.anims.play('orcNormalRun');
+                    enemy.health = 50;
+                }
+                else if (selection == 2) {
+                    enemy.anims.play('skeletonMageRun');
+                    enemy.health = 75;
+                }
+                else {
+                    enemy.anims.play('skeletonRogueRun');
+                    enemy.health = 100;
+                }
+                
+
+                // Stats and functions
+                var net = this;
+                enemy.takeDamage = function(damage) {
+                    this.health -= damage;
+                    
+                    var dat = this;
+                    net.tweens.add({
+                        targets: this,
+                        alpha: 0.5,
+                        duration: 100,
+                        onComplete: function () {
+                        net.tweens.add({
+                            targets: dat,
+                            alpha: 1,
+                            duration: 100
+                        });
+                        }
+                    });
+                }
+                enemy.die = function(enemies) {
+                    //this.spawnItem(this.x, this.y);
+                    this.destroy();
+                }
+                this.enemies.add(enemy);
+            }
+        }
 
         // Phase four 5 minutes: all orcs, skeleton, skeleton mage
+        if (this.game.scene.getScene("UI").clock.now >= 360000 && this.game.scene.getScene("UI").clock.now <= 540000) {
+            if (this.enemies.getChildren().length <= 75) {
+                const selection = this.getRndInteger(0, 5);
+                console.log(selection);
+                let spawnX, spawnY;
+                let side = Phaser.Math.Between(1, 4); // choose a random side of the screen to spawn the enemy
+                if (side === 1) { // spawn above the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = -50;
+                } else if (side === 2) { // spawn below the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = this.game.config.height + 50;
+                } else if (side === 3) { // spawn to the left of the screen
+                spawnX = -50;
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                } else { // spawn to the right of the screen
+                spawnX = this.game.config.width + 50
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                }
 
+                spawnX -= 400;
+                spawnY -= 400;
+                let enemy = this.physics.add.sprite(spawnX, spawnY);
+
+
+                // Boilerplate variables
+                enemy.body.setVelocity(0);
+                enemy.depth = 1;
+                enemy.body.setSize(16, 32);
+                enemy.body.setOffset(24, 32);
+                if (selection == 0) {
+                    enemy.anims.play('skeletonNormalRun');
+                    enemy.health = 75;
+                }
+                else if (selection == 1) {
+                    enemy.anims.play('orcNormalRun');
+                    enemy.health = 50;
+                }
+                else if (selection == 2) {
+                    enemy.anims.play('skeletonMageRun');
+                    enemy.health = 75;
+                }
+                else if (selection == 3){
+                    enemy.anims.play('skeletonRogueRun');
+                    enemy.health = 100;
+                }
+                else {
+                    enemy.anims.play('skeletonWarriorRun');
+                    enemy.health = 150;
+                }
+                
+
+                // Stats and functions
+                var net = this;
+                enemy.takeDamage = function(damage) {
+                    this.health -= damage;
+                    
+                    var dat = this;
+                    net.tweens.add({
+                        targets: this,
+                        alpha: 0.5,
+                        duration: 100,
+                        onComplete: function () {
+                        net.tweens.add({
+                            targets: dat,
+                            alpha: 1,
+                            duration: 100
+                        });
+                        }
+                    });
+                }
+                enemy.die = function(enemies) {
+                    //this.spawnItem(this.x, this.y);
+                    this.destroy();
+                }
+                this.enemies.add(enemy);
+            }
+        }
 
         // Phase five 3 minutes: all orcs, all skeletons
+        if (this.game.scene.getScene("UI").clock.now >= 540000 && this.game.scene.getScene("UI").clock.now <= 600000) {
+            if (this.enemies.getChildren().length <= 75) {
+                const selection = this.getRndInteger(0, 3);
+                console.log(selection);
+                let spawnX, spawnY;
+                let side = Phaser.Math.Between(1, 4); // choose a random side of the screen to spawn the enemy
+                if (side === 1) { // spawn above the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = -50;
+                } else if (side === 2) { // spawn below the screen
+                spawnX = Phaser.Math.Between(-50, this.game.config.width + 50);
+                spawnY = this.game.config.height + 50;
+                } else if (side === 3) { // spawn to the left of the screen
+                spawnX = -50;
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                } else { // spawn to the right of the screen
+                spawnX = this.game.config.width + 50
+                spawnY = Phaser.Math.Between(-50, this.game.config.height + 50);
+                }
+
+                spawnX -= 400;
+                spawnY -= 400;
+                let enemy = this.physics.add.sprite(spawnX, spawnY);
+
+
+                // Boilerplate variables
+                enemy.body.setVelocity(0);
+                enemy.depth = 1;
+                enemy.body.setSize(16, 32);
+                enemy.body.setOffset(24, 32);
+                if (selection == 0) {
+                    enemy.anims.play('skeletonMageRun');
+                    enemy.health = 100;
+                }
+                else if (selection == 1){
+                    enemy.anims.play('skeletonRogueRun');
+                    enemy.health = 125;
+                }
+                else {
+                    enemy.anims.play('skeletonWarriorRun');
+                    enemy.health = 200;
+                }
+                
+
+                // Stats and functions
+                var net = this;
+                enemy.takeDamage = function(damage) {
+                    this.health -= damage;
+                    
+                    var dat = this;
+                    net.tweens.add({
+                        targets: this,
+                        alpha: 0.5,
+                        duration: 100,
+                        onComplete: function () {
+                        net.tweens.add({
+                            targets: dat,
+                            alpha: 1,
+                            duration: 100
+                        });
+                        }
+                    });
+                }
+                enemy.die = function(enemies) {
+                    //this.spawnItem(this.x, this.y);
+                    this.destroy();
+                }
+                this.enemies.add(enemy);
+            }
+        }
+    }
+
+    unlockItem(key) {
+        console.log(key);
     }
 
     preload () 
@@ -69,10 +433,17 @@ export class StageScene extends Phaser.Scene {
         this.load.image('chicken', '/assets/items/chicken.png', {frameWidth: 16, frameHeight: 16});
         this.load.audio('pickup', '../assets/sounds/effects/powerUp.wav');
         this.load.image('xpGem', '/assets/items/xp_gem.png');
+
+        // Audio
+        this.load.audio('click', '../assets/sounds/effects/click.wav');
+        this.load.audio('menuMusic', '../assets/sounds/music/menuMusic.mp3');
     }
     
     create () 
     {
+
+        // List of possible upgrades
+
         // List of all enemies
         this.enemies = this.add.group();
 
@@ -89,6 +460,8 @@ export class StageScene extends Phaser.Scene {
             else {
                 console.log(this.game.scene);
                 this.game.scene.getScene("UI").showPauseScreen();
+                this.game.scene.getScene("UI").clock.pause();
+                this.game.scene.getScene("UI").paused = true;
                 this.scene.isPaused();
                 this.scene.pause();
             }
@@ -113,9 +486,6 @@ export class StageScene extends Phaser.Scene {
         })
 
 
-        this.throwingKnife = this.physics.add.sprite(0, 0, 'blade');
-        this.throwingKnife.enabled = false;
-        this.throwingKnife.depth = 1;
 
 
         // var mapData = [];
@@ -173,46 +543,89 @@ export class StageScene extends Phaser.Scene {
             repeat: -1
         }; this.anims.create(orcNormalRunAnimation);
     
+        const orcShamanRunAnimation = {
+            key: 'orcShamanRun',
+            frames: this.anims.generateFrameNames('orcShamanRun'),
+            frameRate: 6,
+            repeat: -1
+        }; this.anims.create(orcShamanRunAnimation);
+        this.cursors = this.input.keyboard.createCursorKeys();
+
+        const orcWarriorRunAnimation = {
+            key: 'orcWarriorRun',
+            frames: this.anims.generateFrameNames('orcWarriorRun'),
+            frameRate: 6,
+            repeat: -1
+        }; this.anims.create(orcWarriorRunAnimation);
+
+        const skeletonNormalRunAnimation = {
+            key: 'skeletonNormalRun',
+            frames: this.anims.generateFrameNames('skeletonNormalRun'),
+            frameRate: 6,
+            repeat: -1
+        }; this.anims.create(skeletonNormalRunAnimation);
+
+        const skeletonRogueRunAnimation = {
+            key: 'skeletonRogueRun',
+            frames: this.anims.generateFrameNames('skeletonRogueRun'),
+            frameRate: 6,
+            repeat: -1
+        }; this.anims.create(skeletonRogueRunAnimation);
+
+        const skeletonMageRunAnimation = {
+            key: 'skeletonMageRun',
+            frames: this.anims.generateFrameNames('skeletonMageRun'),
+            frameRate: 6,
+            repeat: -1
+        }; this.anims.create(skeletonMageRunAnimation);
+
+        const skeletonWarriorRunAnimation = {
+            key: 'skeletonWarriorRun',
+            frames: this.anims.generateFrameNames('skeletonWarriorRun'),
+            frameRate: 6,
+            repeat: -1
+        }; this.anims.create(skeletonWarriorRunAnimation);
+
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // Generate enemies
-        for (var i = 0; i < 250; i++) {
-            // Spawn it randomly
-            let enemy = this.physics.add.sprite(Math.floor(Math.random() * 1000), Math.floor(Math.random() * 1000));
+        // for (var i = 0; i < 250; i++) {
+        //     // Spawn it randomly
+        //     let enemy = this.physics.add.sprite(Math.floor(Math.random() * 1000), Math.floor(Math.random() * 1000));
 
-            // Boilerplate variables
-            enemy.body.setVelocity(0);
-            enemy.depth = 1;
-            enemy.anims.play('orcNormalRun');
-            enemy.body.setSize(16, 32);
-            enemy.body.setOffset(24, 32);
+        //     // Boilerplate variables
+        //     enemy.body.setVelocity(0);
+        //     enemy.depth = 1;
+        //     enemy.anims.play('orcShamanRun');
+        //     enemy.body.setSize(16, 32);
+        //     enemy.body.setOffset(24, 32);
 
-            // Stats and functions
-            enemy.health = 50;
-            var net = this;
-            enemy.takeDamage = function(damage) {
-                this.health -= damage;
+        //     // Stats and functions
+        //     enemy.health = 50;
+        //     var net = this;
+        //     enemy.takeDamage = function(damage) {
+        //         this.health -= damage;
                 
-                var dat = this;
-                net.tweens.add({
-                    targets: this,
-                    alpha: 0.5,
-                    duration: 100,
-                    onComplete: function () {
-                    net.tweens.add({
-                        targets: dat,
-                        alpha: 1,
-                        duration: 100
-                    });
-                    }
-                });
-            }
-            enemy.die = function(enemies) {
-                //this.spawnItem(this.x, this.y);
-                this.destroy();
-            }
-            this.enemies.add(enemy);
-        }
+        //         var dat = this;
+        //         net.tweens.add({
+        //             targets: this,
+        //             alpha: 0.5,
+        //             duration: 100,
+        //             onComplete: function () {
+        //             net.tweens.add({
+        //                 targets: dat,
+        //                 alpha: 1,
+        //                 duration: 100
+        //             });
+        //             }
+        //         });
+        //     }
+        //     enemy.die = function(enemies) {
+        //         //this.spawnItem(this.x, this.y);
+        //         this.destroy();
+        //     }
+        //     this.enemies.add(enemy);
+        // }
 
         // this.orc = this.physics.add.sprite(0, 0);
         // this.orc.body.setOffset(16, 32);
@@ -225,6 +638,11 @@ export class StageScene extends Phaser.Scene {
         this.player.health = 100;
         this.player.maxHealth = 100;
         this.player.level = 1;
+        this.player.speed = 1;
+        this.player.lastThrownTime = Date.now();
+        this.player.unlocks = new Array("Radial");
+
+        this.player.setSize(16, this.player.height);
         //this.player.setColliderWorldBounds(true);
         this.player.anims.play('playerIdle');
         //this.player.body.setOffset(this.player.width / 2, this.player.height / 2);
@@ -282,7 +700,7 @@ export class StageScene extends Phaser.Scene {
             }
             xpGemThis.updateHealth(-5);
             if (player.health <= 0) {
-                player.die();
+                //player.die();
             }
             var that = this;
             immortal = true;
@@ -340,17 +758,35 @@ export class StageScene extends Phaser.Scene {
     }
 
     throwProjectile() {
-        let projectile = this.projectiles.create(this.player.x, this.player.y, 'projectile');
-        projectile.direction = this.player.direction;
-        projectile.damage = 10;
-        projectile.setVelocityX(projectile.direction === "right" ? 300 : -300);
-        //projectile.setColliderWorldBounds(true);
-        this.physics.add.collider(projectile, this.enemies, function(projectile, enemy) {
-            enemy.health -= 10;
-            projectile.destroy();
-        })
-        //projectile.setBounce(1, 1);
-        this.player.lastThrownTime = Date.now();
+        console.log(Date.now())
+        if (Date.now() - this.player.lastThrownTime > 1000) {
+            let projectile = this.physics.add.image(this.player.x, this.player.y, 'blade');
+            if (!this.player.flipX) {
+                projectile.body.velocity.x = 300;
+                projectile.rotation = -90;
+            }
+            else {
+                projectile.body.velocity.x = -300;
+                projectile.rotation = 45;
+            }
+            console.log(this.player.body.direction);
+            projectile.damage = 10;
+            //projectile.body.velocity.x = projectile.direction === "right" ? 300 : -300;
+            //projectile.setColliderWorldBounds(true);
+            this.physics.add.overlap(projectile, this.enemies.getChildren(), function(projectile, enemy) {
+                enemy.takeDamage(50);
+        
+                // Check if the enemy has lost all of its health
+                if (enemy.health <= 0) {
+                    enemy.die();
+                    //spawnGem(enemy.x, enemy.y);
+                }
+                projectile.destroy();
+            })
+            //projectile.setBounce(1, 1);
+            this.player.lastThrownTime = Date.now();
+        }
+        
     }
 
     followPlayer(enemy) {
@@ -425,21 +861,33 @@ export class StageScene extends Phaser.Scene {
         else {
             this.player.health += value;
         }
+        
         this.game.scene.getScene("UI").healthBar.setValue(this.player.health / 100);
+        if (this.player.health <= 0) {
+            this.game.scene.getScene("UI").showDeathScreen();
+            this.game.scene.getScene("UI").clock.pause();
+            this.scene.pause();
+        }
     }
 
     updateXp(value) {
         this.player.xp += value
-        if (this.player.xp + value >= 100) {
+        if (this.player.xp + value >= this.player.maxXp) {
             this.player.xp = 0;
             this.player.level++;
+            this.player.maxXp = Math.floor(this.player.maxXp * 1.5);
+            this.game.scene.getScene("UI").showUpgradeMenu();
+            this.game.scene.getScene("UI").clock.pause();
+            this.scene.pause();
         }
         else {
             this.player.xp += value;
         }
-        this.game.scene.getScene("UI").xpBar.setValue(this.player.xp / 100);
+        this.game.scene.getScene("UI").xpBar.setValue(this.player.xp / this.player.maxXp);
         this.game.scene.getScene("UI").levelText.setText('Lvl. ' + this.player.level);
     }
+
+    
 
     update () 
     {
@@ -649,6 +1097,9 @@ export class StageScene extends Phaser.Scene {
         if (this.player.anims.currentAnim.key != 'playerIdle' && !this.cursors.up.isDown && !this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
             this.player.play('playerIdle');
         }
+
+        this.spawner();
+        this.throwProjectile();
 
         // if (this.chickenVisibility === true && (this.player.x >= this.chicken.x - 10 && this.player.x <= this.chicken.x + 10) && (this.player.y >= this.chicken.y - 10 && this.player.y <= this.chicken.y + 10)) {
         //     this.chicken.visible = false;
