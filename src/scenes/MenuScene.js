@@ -30,6 +30,7 @@ export class MenuScene extends Phaser.Scene {
 
         // Font
         this.loadFont('minimalPixel', '../assets/fonts/MinimalPixel.ttf');
+        
     }
 
     // Font loader function
@@ -43,45 +44,51 @@ export class MenuScene extends Phaser.Scene {
     }
 
     showMainMenu() {
-        this.titleText.setVisible(true);
-        this.menuContainerTop.setVisible(true);
-        this.menuContainerMiddle.setVisible(true);
-        this.menuContainerMiddle2.setVisible(true);
-        this.menuContainerMiddle3.setVisible(true);
-        this.menuContainerMiddle4.setVisible(true);
-        this.menuContainerMiddle5.setVisible(true);;
-        this.menuContainerBottom.setVisible(true);
-        this.startGameButton.setVisible(true);
-        this.startGameButtonText.setVisible(true);
-        this.creditsButton.setVisible(true);
-        this.creditsButtonText.setVisible(true);
-        this.upgradeButton.setVisible(true);
-        this.upgradeButtonText.setVisible(true);
-        this.helpButton.setVisible(true);
-        this.helpButtonText.setVisible(true)
-        this.settingsButton.setVisible(true);
-        this.settingsButtonText.setVisible(true);
+        this.mainMenuComponents.forEach((component) => {
+            component.setVisible(true);
+        });
+        // this.titleText.setVisible(true);
+        // this.menuContainerTop.setVisible(true);
+        // this.menuContainerMiddle.setVisible(true);
+        // this.menuContainerMiddle2.setVisible(true);
+        // this.menuContainerMiddle3.setVisible(true);
+        // this.menuContainerMiddle4.setVisible(true);
+        // this.menuContainerMiddle5.setVisible(true);;
+        // this.menuContainerBottom.setVisible(true);
+        // this.startGameButton.setVisible(true);
+        // this.startGameButtonText.setVisible(true);
+        // this.creditsButton.setVisible(true);
+        // this.creditsButtonText.setVisible(true);
+        // this.upgradeButton.setVisible(true);
+        // this.upgradeButtonText.setVisible(true);
+        // this.helpButton.setVisible(true);
+        // this.helpButtonText.setVisible(true)
+        // this.settingsButton.setVisible(true);
+        // this.settingsButtonText.setVisible(true);
     }
 
     hideMainMenu() {
-        this.titleText.setVisible(false);
-        this.menuContainerTop.setVisible(false);
-        this.menuContainerMiddle.setVisible(false);
-        this.menuContainerMiddle2.setVisible(false);
-        this.menuContainerMiddle3.setVisible(false);
-        this.menuContainerMiddle4.setVisible(false);
-        this.menuContainerMiddle5.setVisible(false);;
-        this.menuContainerBottom.setVisible(false);
-        this.startGameButton.setVisible(false);
-        this.startGameButtonText.setVisible(false);
-        this.upgradeButton.setVisible(false);
-        this.upgradeButtonText.setVisible(false);
-        this.helpButton.setVisible(false);
-        this.helpButtonText.setVisible(false)
-        this.creditsButton.setVisible(false);
-        this.creditsButtonText.setVisible(false);
-        this.settingsButton.setVisible(false);
-        this.settingsButtonText.setVisible(false);
+        this.mainMenuComponents.forEach((component) => {
+            component.setVisible(false);
+        });
+        // this.titleText.setVisible(false);
+        // this.menuContainerTop.setVisible(false);
+        // this.menuContainerMiddle.setVisible(false);
+        // this.menuContainerMiddle2.setVisible(false);
+        // this.menuContainerMiddle3.setVisible(false);
+        // this.menuContainerMiddle4.setVisible(false);
+        // this.menuContainerMiddle5.setVisible(false);;
+        // this.menuContainerBottom.setVisible(false);
+        // this.startGameButton.setVisible(false);
+        // this.startGameButtonText.setVisible(false);
+        // this.upgradeButton.setVisible(false);
+        // this.upgradeButtonText.setVisible(false);
+        // this.helpButton.setVisible(false);
+        // this.helpButtonText.setVisible(false)
+        // this.creditsButton.setVisible(false);
+        // this.creditsButtonText.setVisible(false);
+        // this.settingsButton.setVisible(false);
+        // this.settingsButtonText.setVisible(false);
     }
 
     showCreditsMenu() {
@@ -111,72 +118,74 @@ export class MenuScene extends Phaser.Scene {
         this.soundButtonText.setVisible(false);
     }
 
-    create() {
-        // Set background image
+    setBackgroundImage() {
         const bg = this.add.image(0, 0, 'background');
         bg.setOrigin(0);
         bg.setScale(this.cameras.main.width / bg.width, this.cameras.main.height / bg.height);
+    }
 
-        // Set menu music
+    setMusic() {
         this.music = this.sound.add('menuMusic', { volume: 0.3, loop: true });
         this.music.play();
+    }
 
+    create() {
+        this.setBackgroundImage();
+
+        this.setMusic();
 
         //// UI FOR MAIN MENU
+        this.mainMenuComponents = new Array();
         // Create title text
-        this.titleText = this.add.text(this.sys.game.canvas.width / 2, 200, 'DEORSOLIS', { font: '64px minimalPixel', fill: '#272B42', stroke: '#FFFFFF', strokeThickness: 10 });
-        this.titleText.setOrigin(0.5, 0.5);
+        let titleText = this.add.text(this.sys.game.canvas.width / 2, 200, 'DEORSOLIS', { font: '64px minimalPixel', fill: '#272B42', stroke: '#FFFFFF', strokeThickness: 10 });
+        titleText.setOrigin(0.5, 0.5);
+        this.mainMenuComponents.push(titleText);
 
-        // Create container
-        this.menuContainerTop = this.add.image(this.sys.game.canvas.width / 2, 300 + 4, 'menuContainerTop');
-        this.menuContainerTop.setScale(6);
-        this.menuContainerMiddle = this.add.image(this.sys.game.canvas.width / 2, 400, 'menuContainerMiddle');
-        this.menuContainerMiddle.setScale(6);
-        this.menuContainerMiddle2 = this.add.image(this.sys.game.canvas.width / 2, 450, 'menuContainerMiddle');
-        this.menuContainerMiddle2.setScale(6);
-        this.menuContainerMiddle3 = this.add.image(this.sys.game.canvas.width / 2, 500, 'menuContainerMiddle');
-        this.menuContainerMiddle3.setScale(6);
-        this.menuContainerMiddle4 = this.add.image(this.sys.game.canvas.width / 2, 550, 'menuContainerMiddle');
-        this.menuContainerMiddle4.setScale(6);
-        this.menuContainerMiddle5 = this.add.image(this.sys.game.canvas.width / 2, 600, 'menuContainerMiddle');
-        this.menuContainerMiddle5.setScale(6);
-        this.menuContainerBottom = this.add.image(this.sys.game.canvas.width / 2, 700 - 4, 'menuContainerBottom');
-        this.menuContainerBottom.setScale(6);
-
+        // Create container for buttons
+        let menuContainerTop = this.add.image(this.sys.game.canvas.width / 2, 300 + 4, 'menuContainerTop');
+        menuContainerTop.setScale(6);
+        let menuContainerBottom = this.add.image(this.sys.game.canvas.width / 2, 700 - 4, 'menuContainerBottom');
+        menuContainerBottom.setScale(6);
+        this.mainMenuComponents.push(menuContainerTop, menuContainerBottom);
+        for (var i = 400; i <= 600; i += 50) {
+            let menuContainerMiddle = this.add.image(this.sys.game.canvas.width / 2, i, 'menuContainerMiddle');
+            menuContainerMiddle.setScale(6);
+            this.mainMenuComponents.push(menuContainerMiddle);            
+        }
+        
         // Create start game button with text
-        this.startGameButton = this.add.image(this.sys.game.canvas.width / 2, 350, 'button').setInteractive();
-        this.startGameButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Start Game', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
-        this.startGameButtonText.setOrigin(0.5, 0.5);
-        this.startGameButton.setScale(4.5);
-        this.startGameButton.on('pointerdown', function() {
+        let startGameButton = this.add.image(this.sys.game.canvas.width / 2, 350, 'button').setInteractive();
+        let startGameButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Start Game', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        startGameButtonText.setOrigin(0.5, 0.5);
+        startGameButton.setScale(4.5);
+        startGameButton.on('pointerdown', function() {
             this.sound.play('click', { volume: 0.5, loop: false });
             this.scene.start(CST.SCENES.STAGE, {clock: this.clock });
             this.scene.start(CST.SCENES.UI, {clock: this.clock});
         }, this);
-
-        // Start game button animations
-        this.startGameButton.on('pointerover', () => {
-            this.startGameButton.setTexture('buttonHover');
+        startGameButton.on('pointerover', () => {
+            startGameButton.setTexture('buttonHover');
         })
-        this.startGameButton.on('pointerout', () => {
-            this.startGameButton.setTexture('button');
-        })
+        startGameButton.on('pointerout', () => {
+            startGameButton.setTexture('button');
+        });
+        this.mainMenuComponents.push(startGameButton, startGameButtonText);
 
         // Create upgrade button with text
-        this.upgradeButton = this.add.image(this.sys.game.canvas.width / 2, 425, 'button').setInteractive();
-        this.upgradeButtonText = this.add.text(this.sys.game.canvas.width / 2, 425, 'Upgrades', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
-        this.upgradeButtonText.setOrigin(0.5, 0.5);
-        this.upgradeButton.setScale(4.5);
-
-        // Upgrade button animations
-        this.upgradeButton.on('pointerover', () => {
-            this.upgradeButton.setTexture('buttonHover');
+        let upgradeButton = this.add.image(this.sys.game.canvas.width / 2, 425, 'button').setInteractive();
+        let upgradeButtonText = this.add.text(this.sys.game.canvas.width / 2, 425, 'Upgrades', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        upgradeButtonText.setOrigin(0.5, 0.5);
+        upgradeButton.setScale(4.5);
+        upgradeButton.on('pointerover', () => {
+            upgradeButton.setTexture('buttonHover');
         })
-        this.upgradeButton.on('pointerout', () => {
-            this.upgradeButton.setTexture('button');
+        upgradeButton.on('pointerout', () => {
+            upgradeButton.setTexture('button');
         })
 
-        this.upgradeButton.on('pointerdown', () => {
+∂
+        upgradeButton.on('pointerdown', () => {
+            this.sound.play('click', { volume: 0.5, loop: false });
             this.upgradeContainer =  this.add.image(this.sys.game.canvas.width / 2, 400, 'infoContainer');
             this.upgradeContainer.setScale(20);
 
@@ -185,12 +194,19 @@ export class MenuScene extends Phaser.Scene {
 
             for (let i = 0; i < 4; i++) {
                 for (let j = 0; j < 3; j++) {
-                    let lockedItem = this.add.image(300 + (i * 200), 260 + (j * 150), 'itemContainer');
+                    let lockedItem = this.add.image(300 + (i * 200), 260 + (j * 150), 'itemContainer').setInteractive();
                     lockedItem.setScale(10);
-            
-                    this.unlocksGroup.push(lockedItem);
+                    lockedItem.on('pointerover', () => {
+                        lockedItem.setTexture('itemContainerHover');
+                        console.log("test");
+                    });
+                    lockedItem.on('pointerout', () => {
+                        lockedItem.setTexture('itemContainer');
+                    });
                     let lock = this.add.image(300 + (i * 200), 250 + (j * 150), 'lock');
                     lock.setScale(9);
+            
+                    this.unlocksGroup.push(lockedItem);
                     this.unlockLockGroup.push(lock);
                 }
             }
@@ -212,7 +228,6 @@ export class MenuScene extends Phaser.Scene {
                     this.unlockLockGroup[j].setVisible(false);
                 }
                 this.showMainMenu();
-                this.settingsButtonText.setVisible(true);
             }, this);
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 675, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
@@ -221,25 +236,26 @@ export class MenuScene extends Phaser.Scene {
             })
             this.backButton.on('pointerout', () => {
                 this.backButton.setTexture('button');
-            })
+            });
 
             this.showHelpMenu();
             this.hideMainMenu();
         });
+        this.mainMenuComponents.push(upgradeButton, upgradeButtonText);
     
         // Create credits button with text
-        this.creditsButton = this.add.image(this.sys.game.canvas.width / 2, 650, 'button').setInteractive();
-        this.creditsButton.setScale(4.5);
-        this.creditsButtonText = this.add.text(this.sys.game.canvas.width / 2, 650, 'Credits', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
-        this.creditsButtonText.setOrigin(0.5, 0.5);
-        this.creditsButton.on('pointerover', () => {
-            this.creditsButton.setTexture('buttonHover');
-        })
-        this.creditsButton.on('pointerout', () => {
-            this.creditsButton.setTexture('button');
-        })
+        let creditsButton = this.add.image(this.sys.game.canvas.width / 2, 650, 'button').setInteractive();
+        creditsButton.setScale(4.5);
+        let creditsButtonText = this.add.text(this.sys.game.canvas.width / 2, 650, 'Credits', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        creditsButtonText.setOrigin(0.5, 0.5);
+        creditsButton.on('pointerover', () => {
+            creditsButton.setTexture('buttonHover');
+        });
+        creditsButton.on('pointerout', () => {
+            creditsButton.setTexture('button');
+        });
 
-        this.creditsButton.on('pointerdown', () => {
+        creditsButton.on('pointerdown', () => {
             this.sound.play('click', { volume: 0.5, loop: false });
 
             // Show info container
@@ -250,8 +266,6 @@ export class MenuScene extends Phaser.Scene {
             this.creditsText = this.add.text(this.sys.game.canvas.width / 2, 400, 'Created and developed by Anže Vidmar\nTextures and assets:\nPixel Crawler by Anakolisa\nPixel Art GUI Elements by Mounir Tohami\nShikashi\'s Fantasy Icons Pack by cheekyinkling\nFree Pixel Effects Pack by CodeManu\nMinimalPixel font by Mounir Tohami\nSound effects created with jsfxr ', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
             this.creditsText.setOrigin(0.5, 0.5);
             this.creditsText.setLineSpacing(15);
-
-            
 
             // create back button
             this.backButton = this.add.image(this.sys.game.canvas.width / 2, 675, 'button').setInteractive();
@@ -265,7 +279,6 @@ export class MenuScene extends Phaser.Scene {
                 // show start game and credits buttons
                 this.infoContainer.setVisible(false);
                 this.showMainMenu();
-                this.settingsButtonText.setVisible(true);
             }, this);
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 675, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
@@ -289,20 +302,21 @@ export class MenuScene extends Phaser.Scene {
             //     creditsText.setVisible(false);
             // }, this);
         }, this);
+        this.mainMenuComponents.push(creditsButton, creditsButtonText);
         
         // Create a help button with text
-        this.helpButton = this.add.image(this.sys.game.canvas.width / 2, 500, 'button').setInteractive();
-        this.helpButton.setScale(4.5);
-        this.helpButtonText = this.add.text(this.sys.game.canvas.width / 2, 500, 'Help', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
-        this.helpButtonText.setOrigin(0.5, 0.5);
-        this.helpButton.on('pointerover', () => {
-            this.helpButton.setTexture('buttonHover');
-        })
-        this.helpButton.on('pointerout', () => {
-            this.helpButton.setTexture('button');
-        })
+        let helpButton = this.add.image(this.sys.game.canvas.width / 2, 500, 'button').setInteractive();
+        helpButton.setScale(4.5);
+        let helpButtonText = this.add.text(this.sys.game.canvas.width / 2, 500, 'Help', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        helpButtonText.setOrigin(0.5, 0.5);
+        helpButton.on('pointerover', () => {
+            helpButton.setTexture('buttonHover');
+        });
+        helpButton.on('pointerout', () => {
+            helpButton.setTexture('button');
+        });
 
-        this.helpButton.on('pointerdown', () => {
+        helpButton.on('pointerdown', () => {
             this.sound.play('click', { volume: 0.5, loop: false });
 
             // Show info container
@@ -328,7 +342,6 @@ export class MenuScene extends Phaser.Scene {
                 // show start game and credits buttons
                 this.infoContainer.setVisible(false);
                 this.showMainMenu();
-                this.settingsButtonText.setVisible(true);
             }, this);
             this.backButtonText = this.add.text(this.sys.game.canvas.width / 2, 675, 'Back', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             this.backButtonText.setOrigin(0.5, 0.5);
@@ -352,20 +365,21 @@ export class MenuScene extends Phaser.Scene {
             //     creditsText.setVisible(false);
             // }, this);
         }, this);
+        this.mainMenuComponents.push(helpButton, helpButtonText);
 
         // Create a settings button with text
-        this.settingsButton = this.add.image(this.sys.game.canvas.width / 2, 575, 'button').setInteractive();
-        this.settingsButton.setScale(4.5);
-        this.settingsButtonText = this.add.text(this.sys.game.canvas.width / 2, 575, 'Settings', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
-        this.settingsButtonText.setOrigin(0.5, 0.5);
-        this.settingsButton.on('pointerover', () => {
-            this.settingsButton.setTexture('buttonHover');
-        })
-        this.settingsButton.on('pointerout', () => {
-            this.settingsButton.setTexture('button');
-        })
+        let settingsButton = this.add.image(this.sys.game.canvas.width / 2, 575, 'button').setInteractive();
+        settingsButton.setScale(4.5);
+        let settingsButtonText = this.add.text(this.sys.game.canvas.width / 2, 575, 'Settings', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        settingsButtonText.setOrigin(0.5, 0.5);
+        settingsButton.on('pointerover', () => {
+            settingsButton.setTexture('buttonHover');
+        });
+        settingsButton.on('pointerout', () => {
+            settingsButton.setTexture('button');
+        });
 
-        this.settingsButton.on('pointerdown', () => {
+        settingsButton.on('pointerdown', () => {
             this.hideMainMenu();
             this.sound.play('click', { volume: 0.5, loop: false });
             // create back button
@@ -430,13 +444,14 @@ export class MenuScene extends Phaser.Scene {
 
         // Hide start game and credits buttons
         }, this);
-        
+
+        this.mainMenuComponents.push(settingsButton, settingsButtonText);
+
+        // Show tutorial screen on first boot
         if (localStorage.getItem("newSession") === null) {
             this.helpButton.emit('pointerdown', this.helpButton.input.pointer);
             localStorage.setItem("newSession", true);
         }
-        
-        
         
         // // set up arrow key navigation for buttons
         // var spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
