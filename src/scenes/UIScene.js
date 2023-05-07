@@ -11,8 +11,10 @@ export class UIScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.plugin('rexlineprogressplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexlineprogressplugin.min.js', true);
-        this.load.plugin('rexclockplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexclockplugin.min.js', true);
+        // this.load.plugin('rexlineprogressplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexlineprogressplugin.min.js', true);
+        // this.load.plugin('rexclockplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexclockplugin.min.js', true);
+        this.load.plugin('rexlineprogressplugin', '/lib/rexlineprogressplugin.min.js', true);
+        this.load.plugin('rexclockplugin', '/lib/rexclockplugin.min.js', true);
         this.load.image('sand_clock', '/assets/ui/sand_clock.png', {frameWidth: 32, frameHeight: 32});
         this.load.image('button', '../assets/ui/button.png');
         this.load.image('buttonHover', '../assets/ui/buttonHover.png')
