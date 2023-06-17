@@ -22,6 +22,21 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('lock', '../assets/ui/lock.png');
         this.load.image('arrowButton', '../assets/ui/arrowButton.png');
         this.load.image('upgradeContainer', '../assets/ui/upgradeBackground.png');
+        this.load.image('gold', '../assets/ui/gold.png');
+
+        this.load.image('damageUpgrade2', '../assets/ui/damageUpgrade2.png');
+        this.load.image('damageUpgrade1', '../assets/ui/damageUpgrade1.png');
+        this.load.image('damageUpgrade3', '../assets/ui/damageUpgrade3.png');
+        this.load.image('damageUpgrade4', '../assets/ui/damageUpgrade4.png');
+
+        this.load.image('healthUpgrade1', '../assets/ui/healthUpgrade1.png');
+        this.load.image('healthUpgrade2', '../assets/ui/healthUpgrade2.png');
+        this.load.image('healthUpgrade3', '../assets/ui/healthUpgrade3.png');
+        this.load.image('healthUpgrade4', '../assets/ui/healthUpgrade4.png');
+
+        this.load.image('speedUpgrade1', '../assets/ui/speedUpgrade1.png');
+        this.load.image('speedUpgrade2', '../assets/ui/speedUpgrade2.png');
+
 
         // Audio
         this.load.audio('click', '../assets/sounds/effects/click.wav');
@@ -114,6 +129,9 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create() {
+        this.unlocks = [[true, false, false, false], [true, false, false, false], [true, false, false, false]];
+        this.unlocksImages = [['damageUpgrade1', 'damageUpgrade2', 'damageUpgrade3', 'damageUpgrade4'], ['healthUpgrade1', 'healthUpgrade2', 'healthUpgrade3', 'healthUpgrade4'], ['speedUpgrade1', 'speedUpgrade2', '', '']]
+        this.unlocksCost = [['50', '150', '400', '1000'], ['100', '150', '250', '750'], ['500', '900', '0', '0']];
         this.setBackgroundImage();
         this.setMusic();
 
@@ -171,6 +189,7 @@ export class MenuScene extends Phaser.Scene {
         // List of items
         let unlocksGroup = new Array();
         let unlockLockGroup = new Array();
+        let unlocksCostGroup = new Array();
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 3; j++) {
                 let lockedItem = this.add.image(300 + (i * 200), 210 + (j * 150), 'itemContainer').setInteractive();
@@ -181,12 +200,45 @@ export class MenuScene extends Phaser.Scene {
                 lockedItem.on('pointerout', () => {
                     lockedItem.setTexture('itemContainer');
                 });
-                let lock = this.add.image(300 + (i * 200), 200 + (j * 150), 'lock');
-                lock.setScale(9);
-        
-                unlocksGroup.push(lockedItem);
-                unlockLockGroup.push(lock);
-                this.upgradeMenuComponents.push(lockedItem, lock);
+                lockedItem.on('pointerdown', () => {
+                    console.log(i, j);
+                    if (JSON.parse(localStorage.getItem("gold")) && this.unlocks[j][i] && +JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i] >= 0) {
+                        this.sound.play('click', { volume: 0.5, loop: false });
+                        this.unlocks[j][i + 1] = true;
+                        unlockLockGroup[(i + 1) * 3 + j].setTexture(this.unlocksImages[j][i + 1]).setScale(3);
+                        unlocksCostGroup[(i + 1) * 3 + j].setText(this.unlocksCost[j][i + 1]);
+
+                        this.goldText.setText(JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
+                        localStorage.setItem("gold", +JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
+                        this.unlocksCost[j][i] = '';
+                        unlocksCostGroup[i * 3 + j].setText(this.unlocksCost[j][i]);
+
+                        
+                    }
+                    
+                    
+                })
+                if (this.unlocks[j][i]) {
+                    let lock = this.add.image(300 + (i * 200), 200 + (j * 150), this.unlocksImages[j][i]);
+                    lock.setScale(3);
+                    let text = this.add.text(300 + (i * 200), 200 + (j * 150) + 65, this.unlocksCost[j][i], { font: '16px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+                    text.setOrigin(0.5, 0.5)
+                    unlocksGroup.push(lockedItem);
+                    unlockLockGroup.push(lock);
+                    unlocksCostGroup.push(text);
+                    this.upgradeMenuComponents.push(lockedItem, lock, text);
+                }
+                else {
+                    let lock = this.add.image(300 + (i * 200), 200 + (j * 150), 'lock');
+                    lock.setScale(9);
+                    let text = this.add.text(300 + (i * 200), 200 + (j * 150) + 65, '', { font: '16px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+                    text.setOrigin(0.5, 0.5)
+                    unlocksGroup.push(lockedItem);
+                    unlockLockGroup.push(lock);
+                    unlocksCostGroup.push(text);
+                    this.upgradeMenuComponents.push(lockedItem, lock, text);
+                }
+                
             }
         }
         // Create container for buttons
@@ -216,9 +268,31 @@ export class MenuScene extends Phaser.Scene {
         backButton.on('pointerout', () => {
             backButton.setTexture('button');
         });
-        this.upgradeMenuComponents.push(backButton, backButtonText, backButtonContainerTop, backButtonContainerBottom);
+
+        // Create container for gold
+        let goldContainerTop = this.add.image(this.sys.game.canvas.width / 2, 56 - 25 - 5, 'menuContainerTop');
+        goldContainerTop.setScale(6);
+        goldContainerTop.depth = 2;
+        let goldContainerBottom = this.add.image(this.sys.game.canvas.width / 2, 106 + 10, 'menuContainerBottom');
+        goldContainerBottom.setScale(6);
+        goldContainerBottom.depth = 2;
+        this.goldText = this.add.text(this.sys.game.canvas.width / 2, 100, '', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        this.goldText.setOrigin(0.5, 0.5);
+        this.goldText.depth = 3;
+        let goldImage = this.add.image(this.sys.game.canvas.width / 2, 50, 'gold');
+        goldImage.setOrigin(0.5, 0.5);
+        goldImage.setScale(2);
+        goldImage.depth = 3;
+        this.upgradeMenuComponents.push(backButton, backButtonText, backButtonContainerTop, backButtonContainerBottom, goldContainerTop, goldContainerBottom, this.goldText, goldImage);
         upgradeButton.on('pointerdown', () => {
             this.sound.play('click', { volume: 0.5, loop: false });
+            if (JSON.parse(localStorage.getItem("gold"))) {
+                this.goldText.setText(localStorage.getItem("gold"));
+            }
+            else {
+                localStorage.setItem("gold", 0);
+                this.goldText.setText(0);
+            }
             this.hideMainMenu();
             this.showUpgradeMenu();
         });
@@ -408,7 +482,7 @@ export class MenuScene extends Phaser.Scene {
 
         // Show tutorial screen on first boot
         if (localStorage.getItem("newSession") === null) {
-            this.helpButton.emit('pointerdown', this.helpButton.input.pointer);
+            helpButton.emit('pointerdown', helpButton.input.pointer);
             localStorage.setItem("newSession", true);
         }
         

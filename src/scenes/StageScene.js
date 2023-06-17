@@ -61,15 +61,20 @@ export class StageScene extends Phaser.Scene {
 
                 // Stats and functions
                 var net = this;
+                enemy.tweening = false;
                 enemy.takeDamage = function(damage) {
                     this.health -= damage;
-                    
+                    if (!enemy.tweening) {
+                        net.sound.play('hitEnemy', { volume: 0.3, loop: false });
+                        enemy.tweening = true;
+                    }
                     var dat = this;
                     net.tweens.add({
                         targets: this,
                         alpha: 0.5,
                         duration: 100,
                         onComplete: function () {
+                        //enemy.tweening = false;
                         net.tweens.add({
                             targets: dat,
                             alpha: 1,
@@ -80,6 +85,7 @@ export class StageScene extends Phaser.Scene {
                 }
                 enemy.die = function(enemies) {
                     //this.spawnItem(this.x, this.y);
+                    net.sound.play('killEnemy', { volume: 0.1, loop: false });
                     this.destroy();
                 }
                 this.enemies.add(enemy);
@@ -137,15 +143,20 @@ export class StageScene extends Phaser.Scene {
 
                 // Stats and functions
                 var net = this;
+                enemy.tweening = false;
                 enemy.takeDamage = function(damage) {
                     this.health -= damage;
-                    
+                    if (!enemy.tweening) {
+                        net.sound.play('hitEnemy', { volume: 0.3, loop: false });
+                        enemy.tweening = true;
+                    }
                     var dat = this;
                     net.tweens.add({
                         targets: this,
                         alpha: 0.5,
                         duration: 100,
                         onComplete: function () {
+                        //enemy.tweening = false;
                         net.tweens.add({
                             targets: dat,
                             alpha: 1,
@@ -156,6 +167,7 @@ export class StageScene extends Phaser.Scene {
                 }
                 enemy.die = function(enemies) {
                     //this.spawnItem(this.x, this.y);
+                    net.sound.play('killEnemy', { volume: 0.1, loop: false });
                     this.destroy();
                 }
                 this.enemies.add(enemy);
@@ -213,15 +225,20 @@ export class StageScene extends Phaser.Scene {
 
                 // Stats and functions
                 var net = this;
+                enemy.tweening = false;
                 enemy.takeDamage = function(damage) {
                     this.health -= damage;
-                    
+                    if (!enemy.tweening) {
+                        net.sound.play('hitEnemy', { volume: 0.3, loop: false });
+                        enemy.tweening = true;
+                    }
                     var dat = this;
                     net.tweens.add({
                         targets: this,
                         alpha: 0.5,
                         duration: 100,
                         onComplete: function () {
+                        //enemy.tweening = false;
                         net.tweens.add({
                             targets: dat,
                             alpha: 1,
@@ -232,6 +249,7 @@ export class StageScene extends Phaser.Scene {
                 }
                 enemy.die = function(enemies) {
                     //this.spawnItem(this.x, this.y);
+                    net.sound.play('killEnemy', { volume: 0.1, loop: false });
                     this.destroy();
                 }
                 this.enemies.add(enemy);
@@ -293,15 +311,20 @@ export class StageScene extends Phaser.Scene {
 
                 // Stats and functions
                 var net = this;
+                enemy.tweening = false;
                 enemy.takeDamage = function(damage) {
                     this.health -= damage;
-                    
+                    if (!enemy.tweening) {
+                        net.sound.play('hitEnemy', { volume: 0.3, loop: false });
+                        enemy.tweening = true;
+                    }
                     var dat = this;
                     net.tweens.add({
                         targets: this,
                         alpha: 0.5,
                         duration: 100,
                         onComplete: function () {
+                        //enemy.tweening = false;
                         net.tweens.add({
                             targets: dat,
                             alpha: 1,
@@ -312,6 +335,7 @@ export class StageScene extends Phaser.Scene {
                 }
                 enemy.die = function(enemies) {
                     //this.spawnItem(this.x, this.y);
+                    net.sound.play('killEnemy', { volume: 0.1, loop: false });
                     this.destroy();
                 }
                 this.enemies.add(enemy);
@@ -365,15 +389,20 @@ export class StageScene extends Phaser.Scene {
 
                 // Stats and functions
                 var net = this;
+                enemy.tweening = false;
                 enemy.takeDamage = function(damage) {
                     this.health -= damage;
-                    
+                    if (!enemy.tweening) {
+                        net.sound.play('hitEnemy', { volume: 0.3, loop: false });
+                        enemy.tweening = true;
+                    }
                     var dat = this;
                     net.tweens.add({
                         targets: this,
                         alpha: 0.5,
                         duration: 100,
                         onComplete: function () {
+                        //enemy.tweening = false;
                         net.tweens.add({
                             targets: dat,
                             alpha: 1,
@@ -384,6 +413,7 @@ export class StageScene extends Phaser.Scene {
                 }
                 enemy.die = function(enemies) {
                     //this.spawnItem(this.x, this.y);
+                    net.sound.play('killEnemy', { volume: 0.1, loop: false });
                     this.destroy();
                 }
                 this.enemies.add(enemy);
@@ -437,6 +467,13 @@ export class StageScene extends Phaser.Scene {
         // Audio
         this.load.audio('click', '../assets/sounds/effects/click.wav');
         this.load.audio('menuMusic', '../assets/sounds/music/menuMusic.mp3');
+        this.load.audio('hitPlayer', '../assets/sounds/effects/hitPlayer.wav');
+        this.load.audio('hitEnemy', '../assets/sounds/effects/hitEnemy.wav');
+        this.load.audio('killEnemy', '../assets/sounds/effects/killEnemy.wav');
+
+        this.load.audio('pickupGem', '../assets/sounds/effects/pickupGem.wav');
+        this.load.audio('levelUp', '../assets/sounds/effects/levelUp.wav');
+
     }
     
     create () 
@@ -635,7 +672,7 @@ export class StageScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(0, 0);
         this.player.xp = 0;
         this.player.maxXp = 100;
-        this.player.health = 100;
+        this.player.health = 1;
         this.player.maxHealth = 100;
         this.player.level = 1;
         this.player.speed = 1;
@@ -674,6 +711,8 @@ export class StageScene extends Phaser.Scene {
                 xpGem.y = y;
                 xpGem.setOrigin(0.5, 0.5);
                 xpGemThis.physics.add.overlap(xpGem, xpGemThis.player, function(gem, player) {
+                    //Phaser.Scene.sound.play('pickupGem', { volume: 0.5, loop: false });
+                    xpGemThis.sound.play('pickupGem', { volume: 0.2, loop: false });
                     gem.destroy();
                 })
                 xpGem.setScale(0.5);
@@ -723,7 +762,7 @@ export class StageScene extends Phaser.Scene {
             
 
         this.physics.add.overlap(this.radialAura, this.enemies.getChildren(), function (aura, enemy) {
-            enemy.takeDamage(1)
+            enemy.takeDamage(1);
             if (enemy.health <= 0) {
                 enemy.die();
                 spawnItem(enemy.x, enemy.y);
@@ -865,6 +904,13 @@ export class StageScene extends Phaser.Scene {
         this.game.scene.getScene("UI").healthBar.setValue(this.player.health / 100);
         if (this.player.health <= 0) {
             this.game.scene.getScene("UI").showDeathScreen();
+            this.game.scene.getScene("UI").deathCoinsValue.setText(Math.round(this.game.scene.getScene("UI").clock.now / 6000));
+            if (JSON.parse(localStorage.getItem("gold"))) {
+                localStorage.setItem("gold", +localStorage.getItem("gold") + Math.round(this.game.scene.getScene("UI").clock.now / 6000));
+            }
+            else {
+                localStorage.setItem("gold", Math.round(this.game.scene.getScene("UI").clock.now / 6000));
+            }
             this.game.scene.getScene("UI").clock.pause();
             this.scene.pause();
         }
@@ -878,6 +924,7 @@ export class StageScene extends Phaser.Scene {
             this.player.maxXp = Math.floor(this.player.maxXp * 1.5);
             this.game.scene.getScene("UI").showUpgradeMenu();
             this.game.scene.getScene("UI").clock.pause();
+            this.sound.play('levelUp',  { volume: 0.2, loop: false })
             this.scene.pause();
         }
         else {

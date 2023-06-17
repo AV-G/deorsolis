@@ -21,6 +21,7 @@ export class UIScene extends Phaser.Scene {
         this.load.image('menuContainerTop', '../assets/ui/menuContainerTop.png');
         this.load.image('menuContainerMiddle', '../assets/ui/menuContainerMiddle.png');
         this.load.image('menuContainerBottom', '../assets/ui/menuContainerBottom.png');
+        this.load.image('gold', '../assets/ui/gold.png');
     }
 
     hideUpgradeMenu() {
@@ -83,6 +84,9 @@ export class UIScene extends Phaser.Scene {
         this.deathText.setVisible(true);
         this.menuButton.setVisible(true);
         this.menuButtonText.setVisible(true);
+        this.deathCoinsImage.setVisible(true);
+        this.deathCoinsValue.setVisible(true);
+        this.deathCoinsText.setVisible(true);
     }
 
     hideDeathScreen() {
@@ -90,6 +94,9 @@ export class UIScene extends Phaser.Scene {
         this.deathText.setVisible(false);
         this.menuButton.setVisible(false);
         this.menuButtonText.setVisible(false);
+        this.deathCoinsImage.setVisible(false);
+        this.deathCoinsValue.setVisible(false);
+        this.deathCoinsText.setVisible(false);
     }
 
     showPauseScreen() {
@@ -168,6 +175,20 @@ export class UIScene extends Phaser.Scene {
         this.deathText.setOrigin(0.5, 0.5);
         this.deathText.setVisible(false);
         this.deathText.setDepth(3);
+        this.deathCoinsImage = this.add.image(this.sys.game.canvas.width / 2, 270, 'gold');
+        this.deathCoinsImage.setOrigin(0.5, 0.5);
+        this.deathCoinsImage.setDepth(3);
+        this.deathCoinsImage.setVisible(false);
+        this.deathCoinsValue = this.add.text(this.sys.game.canvas.width / 2, 310, '', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        this.deathCoinsValue.setDepth(3);
+        this.deathCoinsValue.setOrigin(0.5, 0.5);
+        this.deathCoinsValue.setVisible(false);
+        this.deathCoinsValue.setAlign('left');
+        this.deathCoinsText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Gold Acquired', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+        this.deathCoinsText.setDepth(3);
+        this.deathCoinsText.setOrigin(0.5, 0.5);
+        this.deathCoinsText.setVisible(false);
+
 
         // Create win screen
         this.winText = this.add.text(this.sys.game.canvas.width / 2, 200, 'YOU SURVIVED', { font: '64px minimalPixel', fill: '#2EB247', stroke: '#FFFFFF', strokeThickness: 10 });
@@ -207,7 +228,6 @@ export class UIScene extends Phaser.Scene {
             // remove the value from the unlocks array
             this.unlocks.splice(index, 1);
           }
-        console.log(this.uniqueValues);
         // Create three empty upgrade buttons
         this.firstItem = this.add.image(this.sys.game.canvas.width / 2, 350, 'button').setInteractive();
         this.firstItemText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Item 1', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
@@ -278,8 +298,6 @@ export class UIScene extends Phaser.Scene {
 
         // Pause logic
         this.input.keyboard.on('keydown-ESC', () => {
-            console.log(this.game.scene);
-
             if (this.game.scene.getScene("STAGE").scene.isPaused() && this.paused) {
                 this.game.scene.getScene("STAGE").scene.resume();
                 this.clock.resume();
@@ -289,7 +307,7 @@ export class UIScene extends Phaser.Scene {
         });
 
         // Create time countup above
-        this.timeText = this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.width / 3 - 300, '0:00', { font: '32px Arial', fill: '#ffffff' });
+        this.timeText = this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.width / 3 - 300, '0:00', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
         this.timeText.setOrigin(0.5, 0.5);
 
         // Create the sand clock image above the time countup
@@ -332,13 +350,13 @@ export class UIScene extends Phaser.Scene {
                 ease: 'Linear'
             },
             valuechangeCallback: function(newValue, oldValue, xpBar) {
-                console.log(xpBar);
+                //console.log(xpBar);
             },
         });
         this.xpBar.depth = 1;
 
         // Add the level text
-        this.levelText = this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.width / 3 + 300, 'Lvl. 1', { font: '18px Arial', fill: '#ffffff' });
+        this.levelText = this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.width / 3 + 300, 'Lvl. 1', { font: '18px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
         this.levelText.setOrigin(0.5, 0.5);
         this.levelText.depth = 1;
     }
