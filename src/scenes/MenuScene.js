@@ -37,6 +37,8 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('speedUpgrade1', '../assets/ui/speedUpgrade1.png');
         this.load.image('speedUpgrade2', '../assets/ui/speedUpgrade2.png');
 
+        this.load.image('questionMark', '../assets/ui/questionMark.png');
+
 
         // Audio
         this.load.audio('click', '../assets/sounds/effects/click.wav');
@@ -129,9 +131,20 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create() {
-        this.unlocks = [[true, false, false, false], [true, false, false, false], [true, false, false, false]];
-        this.unlocksImages = [['damageUpgrade1', 'damageUpgrade2', 'damageUpgrade3', 'damageUpgrade4'], ['healthUpgrade1', 'healthUpgrade2', 'healthUpgrade3', 'healthUpgrade4'], ['speedUpgrade1', 'speedUpgrade2', '', '']]
-        this.unlocksCost = [['50', '150', '400', '1000'], ['100', '150', '250', '750'], ['500', '900', '0', '0']];
+        if (JSON.parse(localStorage.getItem("unlocks"))) {
+            this.unlocks = JSON.parse(localStorage.getItem("unlocks"));
+        }
+        else {
+            this.unlocks = [[true, false, false, false], [true, false, false, false], [true, false, false, false]];
+        }
+
+        if (JSON.parse(localStorage.getItem("unlocksCost"))) {
+            this.unlocksCost = JSON.parse(localStorage.getItem("unlocksCost"));
+        }
+        else {
+            this.unlocksCost = [['50', '150', '400', '1000'], ['100', '150', '250', '750'], ['500', '900', '2000', '5000']];
+        }
+        this.unlocksImages = [['damageUpgrade1', 'damageUpgrade2', 'damageUpgrade3', 'damageUpgrade4'], ['healthUpgrade1', 'healthUpgrade2', 'healthUpgrade3', 'healthUpgrade4'], ['speedUpgrade1', 'speedUpgrade2', 'questionMark', 'questionMark']]
         this.setBackgroundImage();
         this.setMusic();
 
@@ -201,32 +214,57 @@ export class MenuScene extends Phaser.Scene {
                     lockedItem.setTexture('itemContainer');
                 });
                 lockedItem.on('pointerdown', () => {
-                    console.log(i, j);
                     if (JSON.parse(localStorage.getItem("gold")) && this.unlocks[j][i] && +JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i] >= 0) {
                         this.sound.play('click', { volume: 0.5, loop: false });
                         this.unlocks[j][i + 1] = true;
-                        unlockLockGroup[(i + 1) * 3 + j].setTexture(this.unlocksImages[j][i + 1]).setScale(3);
-                        unlocksCostGroup[(i + 1) * 3 + j].setText(this.unlocksCost[j][i + 1]);
+                        try {
+                            if (this.unlocksImages[j][i + 1] === "questionMark") {
+                                unlockLockGroup[(i + 1) * 3 + j].setTexture(this.unlocksImages[j][i + 1]).setScale(9);
+    
+                            }
+                            else {
+                                unlockLockGroup[(i + 1) * 3 + j].setTexture(this.unlocksImages[j][i + 1]).setScale(3);
+    
+                            }
+                            unlocksCostGroup[(i + 1) * 3 + j].setText(this.unlocksCost[j][i + 1]);
+    
+                            this.goldText.setText(JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
+                            localStorage.setItem("gold", +JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
+                            this.unlocksCost[j][i] = '';
+                            unlocksCostGroup[i * 3 + j].setText(this.unlocksCost[j][i]);
+                            localStorage.setItem("unlocks", JSON.stringify(this.unlocks));
+                            localStorage.setItem("unlocksCost", JSON.stringify(this.unlocksCost));
 
-                        this.goldText.setText(JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
-                        localStorage.setItem("gold", +JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
-                        this.unlocksCost[j][i] = '';
-                        unlocksCostGroup[i * 3 + j].setText(this.unlocksCost[j][i]);
-
-                        
+                        }
+                        catch {
+                            this.goldText.setText(JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
+                            localStorage.setItem("gold", +JSON.parse(localStorage.getItem("gold")) - this.unlocksCost[j][i]);
+                            this.unlocksCost[j][i] = '';
+                            unlocksCostGroup[i * 3 + j].setText(this.unlocksCost[j][i]); 
+                            localStorage.setItem("unlocks", JSON.stringify(this.unlocks));
+                            localStorage.setItem("unlocksCost", JSON.stringify(this.unlocksCost));
+                        }
+                          
                     }
                     
                     
                 })
                 if (this.unlocks[j][i]) {
                     let lock = this.add.image(300 + (i * 200), 200 + (j * 150), this.unlocksImages[j][i]);
-                    lock.setScale(3);
+                    if (this.unlocksImages[j][i] === "questionMark") {
+                        lock.setScale(9);
+                    }
+                    else {
+                        lock.setScale(3);
+                    }
                     let text = this.add.text(300 + (i * 200), 200 + (j * 150) + 65, this.unlocksCost[j][i], { font: '16px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
                     text.setOrigin(0.5, 0.5)
                     unlocksGroup.push(lockedItem);
                     unlockLockGroup.push(lock);
                     unlocksCostGroup.push(text);
                     this.upgradeMenuComponents.push(lockedItem, lock, text);
+                    localStorage.setItem("unlocks", JSON.stringify(this.unlocks));
+                    localStorage.setItem("unlocksCost", JSON.stringify(this.unlocksCost));
                 }
                 else {
                     let lock = this.add.image(300 + (i * 200), 200 + (j * 150), 'lock');
@@ -237,6 +275,8 @@ export class MenuScene extends Phaser.Scene {
                     unlockLockGroup.push(lock);
                     unlocksCostGroup.push(text);
                     this.upgradeMenuComponents.push(lockedItem, lock, text);
+                    localStorage.setItem("unlocks", JSON.stringify(this.unlocks));
+                    localStorage.setItem("unlocksCost", JSON.stringify(this.unlocksCost));
                 }
                 
             }

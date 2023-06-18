@@ -714,10 +714,11 @@ export class StageScene extends Phaser.Scene {
                     //Phaser.Scene.sound.play('pickupGem', { volume: 0.5, loop: false });
                     xpGemThis.sound.play('pickupGem', { volume: 0.2, loop: false });
                     gem.destroy();
+                    xpGemThis.updateXp(10);
+
                 })
                 xpGem.setScale(0.5);
                 xpGem.setSize(0.5);
-                xpGemThis.updateXp(10);
             }
             else {
                 var chicken = xpGemThis.physics.add.image(64, 64, 'chicken');
