@@ -1,7 +1,6 @@
 import { CST } from "../CST.js";
 import { Chunk } from "../classes/Chunk.js";
 import { UIScene } from "./UIScene.js";
-import { Spawner } from "../classes/Spawner.js"
 
 
 export class StageScene extends Phaser.Scene {
@@ -24,7 +23,6 @@ export class StageScene extends Phaser.Scene {
         if (this.game.scene.getScene("UI").clock.now >= 0 && this.game.scene.getScene("UI").clock.now <= 60000) {
             if (this.enemies.getChildren().length <= 75) {
                 const selection = this.getRndInteger(0, 2);
-                console.log(selection);
                 let spawnX, spawnY;
                 let side = Phaser.Math.Between(1, 4); // choose a random side of the screen to spawn the enemy
                 if (side === 1) { // spawn above the screen
@@ -423,6 +421,26 @@ export class StageScene extends Phaser.Scene {
 
     unlockItem(key) {
         console.log(key);
+        if (key === 'Knife') {
+            this.player.knife++;
+        }
+        else if(key === 'Fireball') {
+            this.player.fireball++;
+        }
+        else if(key === 'Health') {
+            this.player.health += 10;
+            this.player.maxHealth += 10;
+        }
+        else if(key === 'Speed') {
+            this.player.speed *= 1.5;
+        }
+        else if(key === 'Strength') {
+            this.player.damage += 5;
+        }
+        else if(key === 'Radial') {
+            this.radialScale += 0.2;
+            this.radialAura.setScale(this.radialScale);
+        }
     }
 
     preload () 
@@ -430,49 +448,50 @@ export class StageScene extends Phaser.Scene {
 
         this.physics.world.setFPS(120);
         // Player animations
-        this.load.spritesheet('playerRun', '/assets/heroes/knight/Run-Sheet-two.png', { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet('playerIdle', '/assets/heroes/knight/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet('playerWeapon', '/assets/weapons/Hands.png', { frameWidth: 16, frameHeight: 16});
+        this.load.spritesheet('playerRun', 'assets/heroes/knight/Run-Sheet-two.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('playerIdle', 'assets/heroes/knight/Idle-Sheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('playerWeapon', 'assets/weapons/Hands.png', { frameWidth: 16, frameHeight: 16});
 
         // Background assets
-        this.load.image('floor', '/assets/environments/dungeon/Tiles.png', {frameWidth: 16, frameHeight: 16});
-        this.load.image('demoTile', '/assets/environments/dungeon/Tile.png', {frameWidth: 16, frameHeight: 16});
-        this.load.image('tiles', '/assets/environments/woods/Tiles.png', {frameWidth: 16, frameHeight: 16});
-        this.load.image('grassTile1', '/assets/environments/woods/grassTile1.png', {frameWidth: 48, frameHeight: 48});
-        this.load.image('grassTile2', '/assets/environments/woods/grassTile2.png', {frameWidth: 48, frameHeight: 48});
-        this.load.image('dirtOnGrassTile', '/assets/environments/woods/dirtOnGrassTile.png', {frameWidth: 48, frameHeight: 48});
+        this.load.image('grassTile1', 'assets/environments/woods/grassTile1.png', {frameWidth: 48, frameHeight: 48});
+        this.load.image('grassTile2', 'assets/environments/woods/grassTile2.png', {frameWidth: 48, frameHeight: 48});
+        this.load.image('dirtOnGrassTile', 'assets/environments/woods/dirtOnGrassTile.png', {frameWidth: 48, frameHeight: 48});
         
 
         // Enemy animations
-        this.load.spritesheet('orcNormalRun', '/assets/enemies/orc/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('orcShamanRun', '/assets/enemies/orc_rogue/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('orcWarriorRun', '/assets/enemies/orc_shaman/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('skeletonNormalRun', '/assets/enemies/skeleton/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('skeletonRogueRun', '/assets/enemies/skeleton_rogue/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('skeletonMageRun', '/assets/enemies/skeleton_mage/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('skeletonWarriorRun', '/assets/enemies/skeleton_warrior/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('orcNormalRun', 'assets/enemies/orc/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('orcShamanRun', 'assets/enemies/orc_rogue/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('orcWarriorRun', 'assets/enemies/orc_shaman/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('skeletonNormalRun', 'assets/enemies/skeleton/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('skeletonRogueRun', 'assets/enemies/skeleton_rogue/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('skeletonMageRun', 'assets/enemies/skeleton_mage/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('skeletonWarriorRun', 'assets/enemies/skeleton_warrior/Run-Sheet.png', {frameWidth: 64, frameHeight: 64});
 
         // Weapons
-        this.load.spritesheet('radialAura', '/assets/effects/radius_spritesheet.png', { frameWidth: 100, frameHeight: 100});
-        this.load.image('axe', '/assets/weapons/axe.png');
-        this.load.image('blade', '/assets/weapons/blade.png');
+        this.load.spritesheet('radialAura', 'assets/effects/radius_spritesheet.png', { frameWidth: 100, frameHeight: 100});
+        this.load.spritesheet('fireball', 'assets/effects/fireball_spritesheet.png', { frameWidth: 100, frameHeight: 100});
+        this.load.image('axe', 'assets/weapons/axe.png');
+        this.load.image('blade', 'assets/weapons/blade.png');
 
         // Effects
 
         // Items
-        this.load.image('chicken', '/assets/items/chicken.png', {frameWidth: 16, frameHeight: 16});
-        this.load.audio('pickup', '../assets/sounds/effects/powerUp.wav');
-        this.load.image('xpGem', '/assets/items/xp_gem.png');
+        this.load.image('chicken', 'assets/items/chicken.png', {frameWidth: 16, frameHeight: 16});
+        this.load.audio('pickup', 'assets/sounds/effects/powerUp.wav');
+        this.load.image('xpGem', 'assets/items/xp_gem.png');
 
         // Audio
-        this.load.audio('click', '../assets/sounds/effects/click.wav');
-        this.load.audio('menuMusic', '../assets/sounds/music/menuMusic.mp3');
-        this.load.audio('hitPlayer', '../assets/sounds/effects/hitPlayer.wav');
-        this.load.audio('hitEnemy', '../assets/sounds/effects/hitEnemy.wav');
-        this.load.audio('killEnemy', '../assets/sounds/effects/killEnemy.wav');
+        this.load.audio('click', 'assets/sounds/effects/click.wav');
+        this.load.audio('menuMusic', 'assets/sounds/music/menuMusic.mp3');
+        this.load.audio('hitPlayer', 'assets/sounds/effects/hitPlayer.wav');
+        this.load.audio('killPlayer', 'assets/sounds/effects/killPlayer.wav')
+        this.load.audio('hitEnemy', 'assets/sounds/effects/hitEnemy.wav');
+        this.load.audio('killEnemy', 'assets/sounds/effects/killEnemy.wav');
+        this.load.audio('knifeThrow', 'assets/sounds/effects/knifeThrow.wav');
+        this.load.audio('fireballThrow', 'assets/sounds/effects/fireballThrow.wav');
 
-        this.load.audio('pickupGem', '../assets/sounds/effects/pickupGem.wav');
-        this.load.audio('levelUp', '../assets/sounds/effects/levelUp.wav');
+        this.load.audio('pickupGem', 'assets/sounds/effects/pickupGem.wav');
+        this.load.audio('levelUp', 'assets/sounds/effects/levelUp.wav');
 
     }
     
@@ -504,17 +523,28 @@ export class StageScene extends Phaser.Scene {
             }
         });
 
+        this.radialScale = 1;
+
         let radialAuraSprite = {
             key: 'radialAura',
             frames: this.anims.generateFrameNumbers('radialAura', {start: 0, end: 81}),
             frameRate: 60,
             repeat: -1,
         }; this.anims.create(radialAuraSprite);
+
+        this.fireball = {
+            key: 'fireball',
+            frames: this.anims.generateFrameNumbers('fireball', {start: 0, end: 61}),
+            frameRate: 60,
+            repeat: -1,
+        }; this.anims.create(this.fireball);
+
         
         this.radialAura = this.physics.add.sprite(0, 0, radialAuraSprite);
         this.radialAura.anims.play("radialAura");
         this.radialAura.depth = 1;
         this.radialAura.setSize(64, 64);
+
 
 
         let projectiles = this.physics.add.group({
@@ -672,12 +702,44 @@ export class StageScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(0, 0);
         this.player.xp = 0;
         this.player.maxXp = 100;
-        this.player.health = 1;
+        this.player.health = 100;
         this.player.maxHealth = 100;
+        this.player.damage = 1;
         this.player.level = 1;
-        this.player.speed = 1;
+        this.player.speed = 10;
         this.player.lastThrownTime = Date.now();
+        this.player.lastCastTime = Date.now();
         this.player.unlocks = new Array("Radial");
+        this.player.radial = 0;
+        this.player.fireball = 0;
+        this.player.knife = 0;
+        this.player.strength = 0;
+
+        if (JSON.parse(localStorage.getItem("unlocksCost"))) {
+            this.unlocks = JSON.parse(localStorage.getItem("unlocksCost"));
+        }
+        else {
+            this.unlocks = [['50', '150', '400', '1000'], ['100', '150', '250', '750'], ['500', '900', '2000', '5000']];
+        }
+
+        for (let i = 0; i < 4; i++) {
+            if (this.unlocks[0][i] === '') {
+                this.player.damage += 5;
+            }
+        }
+
+        for (let i = 0; i < 4; i++) {
+            if (this.unlocks[1][i] === '') {
+                this.player.health += 10;
+            }
+        }
+
+        for (let i = 0; i < 2; i++) {
+            if (this.unlocks[2][i] === '') {
+                this.player.speed *= 1.5;
+            }
+        }
+
 
         this.player.setSize(16, this.player.height);
         //this.player.setColliderWorldBounds(true);
@@ -763,7 +825,7 @@ export class StageScene extends Phaser.Scene {
             
 
         this.physics.add.overlap(this.radialAura, this.enemies.getChildren(), function (aura, enemy) {
-            enemy.takeDamage(1);
+            enemy.takeDamage(0.2);
             if (enemy.health <= 0) {
                 enemy.die();
                 spawnItem(enemy.x, enemy.y);
@@ -781,7 +843,7 @@ export class StageScene extends Phaser.Scene {
                     //if (Phaser.Geom.Intersects.RectangleToRectangle(enemyBounds, auraBounds)) {
                     if (net.physics.overlap(aura, enemy)) {
 
-                        enemy.takeDamage(1);
+                        enemy.takeDamage(0.2);
         
                         // Check if the enemy has lost all of its health
                         if (enemy.health <= 0) {
@@ -798,34 +860,228 @@ export class StageScene extends Phaser.Scene {
     }
 
     throwProjectile() {
-        console.log(Date.now())
-        if (Date.now() - this.player.lastThrownTime > 1000) {
-            let projectile = this.physics.add.image(this.player.x, this.player.y, 'blade');
-            if (!this.player.flipX) {
-                projectile.body.velocity.x = 300;
-                projectile.rotation = -90;
-            }
-            else {
-                projectile.body.velocity.x = -300;
-                projectile.rotation = 45;
-            }
-            console.log(this.player.body.direction);
-            projectile.damage = 10;
-            //projectile.body.velocity.x = projectile.direction === "right" ? 300 : -300;
-            //projectile.setColliderWorldBounds(true);
-            this.physics.add.overlap(projectile, this.enemies.getChildren(), function(projectile, enemy) {
-                enemy.takeDamage(50);
-        
-                // Check if the enemy has lost all of its health
-                if (enemy.health <= 0) {
-                    enemy.die();
-                    //spawnGem(enemy.x, enemy.y);
+        if (this.player.knife > 0) {
+            if (Date.now() - this.player.lastThrownTime > 1000) {
+                let projectile = this.physics.add.image(this.player.x, this.player.y, 'blade');
+                if (!this.player.flipX) {
+                    projectile.body.velocity.x = 300;
+                    projectile.rotation = -90;
                 }
-                projectile.destroy();
-            })
-            //projectile.setBounce(1, 1);
-            this.player.lastThrownTime = Date.now();
+                else {
+                    projectile.body.velocity.x = -300;
+                    projectile.rotation = 45;
+                }
+                projectile.damage = this.player.damage;
+                //projectile.body.velocity.x = projectile.direction === "right" ? 300 : -300;
+                //projectile.setColliderWorldBounds(true);
+                var something = this;
+                this.physics.add.overlap(projectile, this.enemies.getChildren(), function(projectile, enemy) {
+                    enemy.takeDamage(50 + something.player.damage);
+            
+                    // Check if the enemy has lost all of its health
+                    if (enemy.health <= 0) {
+                        enemy.die();
+                        //spawnGem(enemy.x, enemy.y);
+                    }
+                    projectile.destroy();
+                })
+
+                if (this.player.knife > 1) {
+                    let projectile2 = this.physics.add.image(this.player.x, this.player.y, 'blade');
+                    if (this.player.flipX) {
+                        projectile2.body.velocity.x = 300;
+                        projectile2.rotation = -90;
+                    }
+                    else {
+                        projectile2.body.velocity.x = -300;
+                        projectile2.rotation = 45;
+                    }
+                    projectile2.damage = this.player.damage;
+                    var something = this;
+                    this.physics.add.overlap(projectile2, this.enemies.getChildren(), function(projectile2, enemy) {
+                        enemy.takeDamage(50 + something.player.damage);
+                
+                        // Check if the enemy has lost all of its health
+                        if (enemy.health <= 0) {
+                            enemy.die();
+                            //spawnGem(enemy.x, enemy.y);
+                        }
+                        projectile2.destroy();
+                    })
+
+                    if (this.player.knife > 2) {
+                        let projectile3 = this.physics.add.image(this.player.x, this.player.y, 'blade');
+                        projectile3.body.velocity.y = 300;
+                        projectile3.rotation = -45;
+
+                        projectile3.damage = this.player.damage;
+                        var something = this;
+                        this.physics.add.overlap(projectile3, this.enemies.getChildren(), function(projectile3, enemy) {
+                            enemy.takeDamage(50 + something.player.damage);
+                    
+                            // Check if the enemy has lost all of its health
+                            if (enemy.health <= 0) {
+                                enemy.die();
+                                //spawnGem(enemy.x, enemy.y);
+                            }
+                            projectile3.destroy();
+                        })
+
+                        if (this.player.knife > 3) {
+                            let projectile4 = this.physics.add.image(this.player.x, this.player.y, 'blade');
+                            projectile4.body.velocity.y = -300;
+                            projectile4.rotation = 90;
+
+                            projectile4.damage = this.player.damage;
+                            var something = this;
+                            this.physics.add.overlap(projectile4, this.enemies.getChildren(), function(projectile4, enemy) {
+                                enemy.takeDamage(50 + something.player.damage);
+                        
+                                // Check if the enemy has lost all of its health
+                                if (enemy.health <= 0) {
+                                    enemy.die();
+                                    //spawnGem(enemy.x, enemy.y);
+                                }
+                                projectile4.destroy();
+                        })
+                        }
+                    }
+                }
+
+                this.sound.play('knifeThrow', { volume: 0.2, loop: false });
+                //projectile.setBounce(1, 1);
+                this.player.lastThrownTime = Date.now();
+            }
         }
+    }
+
+    // swingAxe() {
+    //     if (Date.now() - this.player.lastSwingTime > 2000) {
+    //         let axe = this.physics.add.image(this.player.x, this.player.y, 'axe');
+    //         if (!this.player.flipX) {
+    //             projectile.rotation = -90;
+    //         }
+    //         else {
+    //             projectile.rotation = 45;
+    //         }
+    //         this.player.lastSwingTime = Date.now();
+    //     }
+    // }
+
+    castFireball() {
+        if (this.player.fireball > 0) {
+            if (Date.now() - this.player.lastCastTime > 1000) {
+                let projectile = this.physics.add.sprite(this.player.x, this.player.y, this.fireball);
+                //projectile.rotation += Phaser.Math.DegToRad(-90);
+                projectile.anims.play('fireball');
+                
+                projectile.setSize(16, 16);
+                projectile.setOrigin(0.5, 0.5);
+    
+                const speed = 200; // Adjust the speed as needed
+    
+                // Calculate a random angle in radians
+                let angle = Phaser.Math.RND.angle();
+                //const angle = 0;
+                // Convert the angle to a vector for velocity
+                let velocity = this.physics.velocityFromAngle(angle, speed);
+                
+                // Set the velocity to the projectile sprite
+                projectile.setVelocity(velocity.x, velocity.y);
+                //projectile.setRotation(Phaser.Math.DegToRad(90));
+                projectile.angle = angle - 90;
+                projectile.damage = this.player.damage;
+                //projectile.body.velocity.x = projectile.direction === "right" ? 300 : -300;
+                //projectile.setColliderWorldBounds(true);
+                var something = this;
+                this.physics.add.overlap(projectile, this.enemies.getChildren(), function(projectile, enemy) {
+                    enemy.takeDamage(25 + something.player.damage);
+            
+                    // Check if the enemy has lost all of its health
+                    if (enemy.health <= 0) {
+                        enemy.die();
+                        //spawnGem(enemy.x, enemy.y);
+                    }
+                    projectile.destroy();
+                })
+
+                if (this.player.fireball > 1) {
+                    let projectile2 = this.physics.add.sprite(this.player.x, this.player.y, this.fireball);
+                    projectile2.anims.play('fireball');
+                    projectile2.setSize(16, 16);
+                    projectile2.setOrigin(0.5, 0.5);
+                    angle = Phaser.Math.RND.angle();
+                    velocity = this.physics.velocityFromAngle(angle, speed);
+                    projectile2.setVelocity(velocity.x, velocity.y);
+                    projectile2.angle = angle - 90;
+                    projectile2.damage = this.player.damage;
+                    var something = this;
+                    this.physics.add.overlap(projectile2, this.enemies.getChildren(), function(projectile2, enemy) {
+                        enemy.takeDamage(25 + something.player.damage);
+                
+                        // Check if the enemy has lost all of its health
+                        if (enemy.health <= 0) {
+                            enemy.die();
+                            //spawnGem(enemy.x, enemy.y);
+                        }
+                        projectile2.destroy();
+                    })
+
+                    if (this.player.fireball > 2) {
+                        let projectile3 = this.physics.add.sprite(this.player.x, this.player.y, this.fireball);
+                        projectile3.anims.play('fireball');
+                        projectile3.setSize(16, 16);
+                        projectile3.setOrigin(0.5, 0.5);
+                        angle = Phaser.Math.RND.angle();
+                        velocity = this.physics.velocityFromAngle(angle, speed);
+                        projectile3.setVelocity(velocity.x, velocity.y);
+                        projectile3.angle = angle - 90;
+                        projectile3.damage = this.player.damage;
+                        var something = this;
+                        this.physics.add.overlap(projectile3, this.enemies.getChildren(), function(projectile3, enemy) {
+                            enemy.takeDamage(25 + something.player.damage);
+                    
+                            // Check if the enemy has lost all of its health
+                            if (enemy.health <= 0) {
+                                enemy.die();
+                                //spawnGem(enemy.x, enemy.y);
+                            }
+                            projectile3.destroy();
+                        })
+
+
+                        if (this.player.fireball > 3) {
+                            let projectile4 = this.physics.add.sprite(this.player.x, this.player.y, this.fireball);
+                            projectile4.anims.play('fireball');
+                            projectile4.setSize(16, 16);
+                            projectile4.setOrigin(0.5, 0.5);
+                            angle = Phaser.Math.RND.angle();
+                            velocity = this.physics.velocityFromAngle(angle, speed);
+                            projectile4.setVelocity(velocity.x, velocity.y);
+                            projectile4.angle = angle - 90;
+                            projectile4.damage = this.player.damage;
+                            var something = this;
+                            this.physics.add.overlap(projectile4, this.enemies.getChildren(), function(projectile4, enemy) {
+                                enemy.takeDamage(25 + something.player.damage);
+                        
+                                // Check if the enemy has lost all of its health
+                                if (enemy.health <= 0) {
+                                    enemy.die();
+                                    //spawnGem(enemy.x, enemy.y);
+                                }
+                                projectile4.destroy();
+                            })
+                        }
+                    }
+
+
+                }
+                this.sound.play('fireballThrow', { volume: 0.2, loop: false });
+                //projectile.setBounce(1, 1);
+                this.player.lastCastTime = Date.now();
+            }
+        }
+        
         
     }
 
@@ -894,7 +1150,6 @@ export class StageScene extends Phaser.Scene {
     }
 
     updateHealth(value) {
-        console.log(this.player.health);
         if (this.player.health + value >= 100) {
             this.player.health = 100;
         }
@@ -904,6 +1159,7 @@ export class StageScene extends Phaser.Scene {
         
         this.game.scene.getScene("UI").healthBar.setValue(this.player.health / 100);
         if (this.player.health <= 0) {
+            this.sound.play('killPlayer', { volume: 0.5, loop: false });
             this.game.scene.getScene("UI").showDeathScreen();
             this.game.scene.getScene("UI").deathCoinsValue.setText(Math.round(this.game.scene.getScene("UI").clock.now / 6000));
             if (JSON.parse(localStorage.getItem("gold"))) {
@@ -923,10 +1179,14 @@ export class StageScene extends Phaser.Scene {
             this.player.xp = 0;
             this.player.level++;
             this.player.maxXp = Math.floor(this.player.maxXp * 1.5);
-            this.game.scene.getScene("UI").showUpgradeMenu();
-            this.game.scene.getScene("UI").clock.pause();
             this.sound.play('levelUp',  { volume: 0.2, loop: false })
-            this.scene.pause();
+            if (this.game.scene.getScene("UI").uniqueValues.length > 0) {
+                this.game.scene.getScene("UI").showUpgradeMenu();
+                this.game.scene.getScene("UI").clock.pause();
+                this.scene.pause();
+            }
+            
+            
         }
         else {
             this.player.xp += value;
@@ -943,6 +1203,11 @@ export class StageScene extends Phaser.Scene {
         // Throwing knife
         if (Date.now() - this.player.lastThrownTime > 1000) {
             this.throwProjectile();
+        }
+
+        // Cast fireball
+        if (Date.now() - this.player.lastCastTime > 2000) {
+            this.castFireball();
         }
 
 
@@ -1109,15 +1374,15 @@ export class StageScene extends Phaser.Scene {
 
 
         if (this.cursors.left.isDown) {
-            this.player.setVelocityX(-160);
-            this.radialAura.setVelocityX(-160);
+            this.player.setVelocityX(-160 - this.player.speed);
+            this.radialAura.setVelocityX(-160 - this.player.speed);
             if (this.player.anims.currentAnim.key == 'playerIdle') {
                 this.player.play('playerRun');
             }
             this.player.flipX = true;
         } else if (this.cursors.right.isDown) {
-            this.player.setVelocityX(160);
-            this.radialAura.setVelocityX(160);
+            this.player.setVelocityX(160 + this.player.speed);
+            this.radialAura.setVelocityX(160 + this.player.speed);
 
             if (this.player.anims.currentAnim.key == 'playerIdle') {
                 this.player.play('playerRun');
@@ -1126,15 +1391,15 @@ export class StageScene extends Phaser.Scene {
         }
 
         if (this.cursors.up.isDown) {
-            this.player.setVelocityY(-160);
-            this.radialAura.setVelocityY(-160);
+            this.player.setVelocityY(-160 - this.player.speed);
+            this.radialAura.setVelocityY(-160 - this.player.speed);
 
             if (this.player.anims.currentAnim.key == 'playerIdle') {
                 this.player.play('playerRun');
             }
           } else if (this.cursors.down.isDown) {
-            this.player.setVelocityY(160);
-            this.radialAura.setVelocityY(160);
+            this.player.setVelocityY(160 + this.player.speed);
+            this.radialAura.setVelocityY(160 + this.player.speed);
 
             if (this.player.anims.currentAnim.key == 'playerIdle') {
                 this.player.play('playerRun');
@@ -1148,6 +1413,7 @@ export class StageScene extends Phaser.Scene {
 
         this.spawner();
         this.throwProjectile();
+        this.castFireball();
 
         // if (this.chickenVisibility === true && (this.player.x >= this.chicken.x - 10 && this.player.x <= this.chicken.x + 10) && (this.player.y >= this.chicken.y - 10 && this.player.y <= this.chicken.y + 10)) {
         //     this.chicken.visible = false;

@@ -3,9 +3,6 @@ import { StageScene } from "./scenes/StageScene.js";
 import { MenuScene } from "./scenes/MenuScene.js";
 import { UIScene } from "./scenes/UIScene.js";
 
-
-let clock;
-
 const config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
@@ -23,7 +20,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            debug: false
         }
     },
     scale: {

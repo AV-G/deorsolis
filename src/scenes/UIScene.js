@@ -13,15 +13,18 @@ export class UIScene extends Phaser.Scene {
     preload() {
         // this.load.plugin('rexlineprogressplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexlineprogressplugin.min.js', true);
         // this.load.plugin('rexclockplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexclockplugin.min.js', true);
-        this.load.plugin('rexlineprogressplugin', '/lib/rexlineprogressplugin.min.js', true);
-        this.load.plugin('rexclockplugin', '/lib/rexclockplugin.min.js', true);
-        this.load.image('sand_clock', '/assets/ui/sand_clock.png', {frameWidth: 32, frameHeight: 32});
-        this.load.image('button', '../assets/ui/button.png');
-        this.load.image('buttonHover', '../assets/ui/buttonHover.png')
-        this.load.image('menuContainerTop', '../assets/ui/menuContainerTop.png');
-        this.load.image('menuContainerMiddle', '../assets/ui/menuContainerMiddle.png');
-        this.load.image('menuContainerBottom', '../assets/ui/menuContainerBottom.png');
-        this.load.image('gold', '../assets/ui/gold.png');
+        this.load.plugin('rexlineprogressplugin', 'lib/rexlineprogressplugin.min.js', true);
+        this.load.plugin('rexclockplugin', 'lib/rexclockplugin.min.js', true);
+        this.load.image('sand_clock', 'assets/ui/sand_clock.png', {frameWidth: 32, frameHeight: 32});
+        this.load.image('button', 'assets/ui/button.png');
+        this.load.image('buttonHover', 'assets/ui/buttonHover.png')
+        this.load.image('menuContainerTop', 'assets/ui/menuContainerTop.png');
+        this.load.image('menuContainerMiddle', 'assets/ui/menuContainerMiddle.png');
+        this.load.image('menuContainerBottom', 'assets/ui/menuContainerBottom.png');
+        this.load.image('gold', 'assets/ui/gold.png');
+
+        this.load.audio('click', 'assets/sounds/effects/click.wav');
+
     }
 
     hideUpgradeMenu() {
@@ -39,43 +42,45 @@ export class UIScene extends Phaser.Scene {
     }
 
     showUpgradeMenu() {
-        this.menuContainerTop.setVisible(true);
-        this.menuContainerMiddle.setVisible(true);
-        this.menuContainerMiddle2.setVisible(true);
-        this.menuContainerMiddle3.setVisible(true);
-        this.menuContainerBottom.setVisible(true);
-        
-        if (this.uniqueValues.length >= 1) {
-            this.firstItem.setVisible(true);
-            this.firstItemText.setVisible(true);
-            this.firstItemText.text = this.uniqueValues[0];
-        }
-        if (this.uniqueValues.length >= 2) {
-            this.secondItem.setVisible(true);
-            this.secondItemText.setVisible(true);
-            this.secondItemText.text = this.uniqueValues[1];
-        }
-        if (this.uniqueValues.length >= 3) {
-            this.thirdItem.setVisible(true);
-            this.thirdItemText.setVisible(true);
-            this.thirdItemText.text = this.uniqueValues[2];
-        }
-        this.uniqueValues = new Array();
-        for (let i = 0; i < 3; i++) {
-            // get a random index
-            const index = Math.floor(Math.random() * this.unlocks.length);
+        if (this.uniqueValues.length > 0) {
+            this.menuContainerTop.setVisible(true);
+            this.menuContainerMiddle.setVisible(true);
+            this.menuContainerMiddle2.setVisible(true);
+            this.menuContainerMiddle3.setVisible(true);
+            this.menuContainerBottom.setVisible(true);
             
-            // get the value at that index
-            const value = this.unlocks[index];
-            
-            // add the value to the uniqueValues array if it hasn't already been added
-            if (!this.uniqueValues.includes(value)) {
-              this.uniqueValues.push(value);
+            if (this.uniqueValues.length >= 1) {
+                this.firstItem.setVisible(true);
+                this.firstItemText.setVisible(true);
+                this.firstItemText.text = this.uniqueValues[0];
             }
-            
-            // remove the value from the unlocks array
-            this.unlocks.splice(index, 1);
-          }
+            if (this.uniqueValues.length >= 2) {
+                this.secondItem.setVisible(true);
+                this.secondItemText.setVisible(true);
+                this.secondItemText.text = this.uniqueValues[1];
+            }
+            if (this.uniqueValues.length >= 3) {
+                this.thirdItem.setVisible(true);
+                this.thirdItemText.setVisible(true);
+                this.thirdItemText.text = this.uniqueValues[2];
+            }
+            this.uniqueValues = new Array();
+            for (let i = this.unlocks.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [this.unlocks[i], this.unlocks[j]] = [this.unlocks[j], this.unlocks[i]];
+            }
+    
+            this.uniqueValues = Array.from(new Set(this.unlocks)).slice(0, 3);
+            this.uniqueValues.forEach((value) => {
+                const index = this.unlocks.indexOf(value);
+                if (index !== -1) {
+                    this.unlocks.splice(index, 1);
+                }
+                console.log(value);
+                console.log(this.unlocks);
+            });
+        }
+        
     }
 
 
@@ -158,12 +163,20 @@ export class UIScene extends Phaser.Scene {
         this.menuButtonText.setOrigin(0.5, 0.5);
         this.menuButton.setScale(4.5);
         this.menuButton.on('pointerdown', () => {
+
             this.game.scene.getScene(CST.SCENES.MENU).music.stop();
             this.game.scene.getScene(CST.SCENES.MENU).scene.stop();
+            this.sound.play('click', { volume: 0.5, loop: false });
             this.scene.start(CST.SCENES.MENU);
             this.game.scene.getScene("UI").scene.stop();
             this.game.scene.getScene("STAGE").scene.stop();
         }, this);
+        this.menuButton.on('pointerover', () => {
+            this.menuButton.setTexture('buttonHover');
+        })
+        this.menuButton.on('pointerout', () => {
+            this.menuButton.setTexture('button');
+        });
         this.menuButton.setVisible(false);
         this.menuButtonText.setVisible(false);
 
@@ -207,34 +220,50 @@ export class UIScene extends Phaser.Scene {
         this.overlay = this.add.graphics().fillStyle(0x000000, 0.5).fillRect(0, 0, this.game.config.width, this.game.config.height);
         this.overlay.setDepth(2);
         this.overlay.setVisible(false);
-        this.unlocks = ["Health", "Health", "Health", "Health", "Health", "Speed", "Speed","Speed","Speed","Speed", "Strength", "Strength", "Strength", "Radial", "Radial", "Radial", "Knife", "Knife", "Knife", "Axe", "Axe", "Axe"]
-
-        this.uniqueValues = new Array();
+        this.unlocks = ["Health", "Health", "Health", "Health", "Health", "Speed", "Speed","Speed","Speed","Speed", "Strength", "Strength", "Strength", "Radial", "Radial", "Radial", "Knife", "Knife", "Knife", "Knife", "Fireball", "Fireball", "Fireball", "Fireball"]
+        //this.unlocks = ["Axe"]
         
         this.paused = false;
 
-        for (let i = 0; i < 3; i++) {
-            // get a random index
-            const index = Math.floor(Math.random() * this.unlocks.length);
-            
-            // get the value at that index
-            const value = this.unlocks[index];
-            
-            // add the value to the uniqueValues array if it hasn't already been added
-            if (!this.uniqueValues.includes(value)) {
-              this.uniqueValues.push(value);
+        for (let i = this.unlocks.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.unlocks[i], this.unlocks[j]] = [this.unlocks[j], this.unlocks[i]];
+        }
+
+        this.uniqueValues = Array.from(new Set(this.unlocks)).slice(0, 3);
+        this.uniqueValues.forEach((value) => {
+            const index = this.unlocks.indexOf(value);
+            if (index !== -1) {
+                this.unlocks.splice(index, 1);
             }
+            console.log(value);
+            console.log(this.unlocks);
+        });
+
+
+        // for (let i = 0; i < 3; i++) {
+        //     // get a random index
+        //     const index = Math.floor(Math.random() * this.unlocks.length);
             
-            // remove the value from the unlocks array
-            this.unlocks.splice(index, 1);
-          }
+        //     // get the value at that index
+        //     const value = this.unlocks[index];
+            
+        //     // add the value to the uniqueValues array if it hasn't already been added
+        //     if (!this.uniqueValues.includes(value)) {
+        //       this.uniqueValues.push(value);
+        //     }
+            
+        //     // remove the value from the unlocks array
+        //     this.unlocks.splice(index, 1);
+        //   }
         // Create three empty upgrade buttons
         this.firstItem = this.add.image(this.sys.game.canvas.width / 2, 350, 'button').setInteractive();
         this.firstItemText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Item 1', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
         this.firstItemText.setOrigin(0.5, 0.5);
         this.firstItem.setScale(4.5);
-        this.firstItem.on('pointerdown', function() {
+        this.firstItem.on('pointerdown', () => {
             this.hideUpgradeMenu();
+            this.sound.play('click', { volume: 0.5, loop: false });
             this.game.scene.getScene("STAGE").scene.resume();
             this.game.scene.getScene("STAGE").unlockItem(this.firstItemText.text);
             this.clock.resume();
@@ -252,6 +281,7 @@ export class UIScene extends Phaser.Scene {
         this.secondItem.setScale(4.5);
         this.secondItem.on('pointerdown', () => {
             this.hideUpgradeMenu();
+            this.sound.play('click', { volume: 0.5, loop: false });
             this.game.scene.getScene("STAGE").scene.resume();
             this.game.scene.getScene("STAGE").unlockItem(this.secondItemText.text);
             this.clock.resume();
@@ -269,8 +299,9 @@ export class UIScene extends Phaser.Scene {
         this.thirdItem.setScale(4.5);
         this.thirdItem.on('pointerdown', () => {
             this.hideUpgradeMenu();
+            this.sound.play('click', { volume: 0.5, loop: false });
             this.game.scene.getScene("STAGE").scene.resume();
-            this.game.scene.getScene("STAGE").unlockItem(this.thirdItemText.getText);
+            this.game.scene.getScene("STAGE").unlockItem(this.thirdItemText.text);
             this.clock.resume();
         }, this);
         this.thirdItem.on('pointerover', () => {

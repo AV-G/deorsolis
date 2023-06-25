@@ -9,43 +9,43 @@ export class MenuScene extends Phaser.Scene {
 
     preload() {
         // UI
-        this.load.image('background', '../assets/ui/title_screen.png');
-        this.load.image('button', '../assets/ui/buttonDefault.png');
-        this.load.image('buttonHover', '../assets/ui/buttonHover.png');
-        this.load.image('buttonPressed', '../assets/ui/buttonPressed.png');
-        this.load.image('menuContainerTop', '../assets/ui/menuContainerTop.png');
-        this.load.image('menuContainerMiddle', '../assets/ui/menuContainerMiddle.png');
-        this.load.image('menuContainerBottom', '../assets/ui/menuContainerBottom.png');
-        this.load.image('infoContainer', '../assets/ui/infoContainer.png');
-        this.load.image('itemContainer', '../assets/ui/itemButton.png');
-        this.load.image('itemContainerHover', '../assets/ui/itemButtonHover.png');
-        this.load.image('lock', '../assets/ui/lock.png');
-        this.load.image('arrowButton', '../assets/ui/arrowButton.png');
-        this.load.image('upgradeContainer', '../assets/ui/upgradeBackground.png');
-        this.load.image('gold', '../assets/ui/gold.png');
+        this.load.image('background', 'assets/ui/title_screen.png');
+        this.load.image('button', 'assets/ui/buttonDefault.png');
+        this.load.image('buttonHover', 'assets/ui/buttonHover.png');
+        this.load.image('buttonPressed', 'assets/ui/buttonPressed.png');
+        this.load.image('menuContainerTop', 'assets/ui/menuContainerTop.png');
+        this.load.image('menuContainerMiddle', 'assets/ui/menuContainerMiddle.png');
+        this.load.image('menuContainerBottom', 'assets/ui/menuContainerBottom.png');
+        this.load.image('infoContainer', 'assets/ui/infoContainer.png');
+        this.load.image('itemContainer', 'assets/ui/itemButton.png');
+        this.load.image('itemContainerHover', 'assets/ui/itemButtonHover.png');
+        this.load.image('lock', 'assets/ui/lock.png');
+        this.load.image('arrowButton', 'assets/ui/arrowButton.png');
+        this.load.image('upgradeContainer', 'assets/ui/upgradeBackground.png');
+        this.load.image('gold', 'assets/ui/gold.png');
 
-        this.load.image('damageUpgrade2', '../assets/ui/damageUpgrade2.png');
-        this.load.image('damageUpgrade1', '../assets/ui/damageUpgrade1.png');
-        this.load.image('damageUpgrade3', '../assets/ui/damageUpgrade3.png');
-        this.load.image('damageUpgrade4', '../assets/ui/damageUpgrade4.png');
+        this.load.image('damageUpgrade2', 'assets/ui/damageUpgrade2.png');
+        this.load.image('damageUpgrade1', 'assets/ui/damageUpgrade1.png');
+        this.load.image('damageUpgrade3', 'assets/ui/damageUpgrade3.png');
+        this.load.image('damageUpgrade4', 'assets/ui/damageUpgrade4.png');
 
-        this.load.image('healthUpgrade1', '../assets/ui/healthUpgrade1.png');
-        this.load.image('healthUpgrade2', '../assets/ui/healthUpgrade2.png');
-        this.load.image('healthUpgrade3', '../assets/ui/healthUpgrade3.png');
-        this.load.image('healthUpgrade4', '../assets/ui/healthUpgrade4.png');
+        this.load.image('healthUpgrade1', 'assets/ui/healthUpgrade1.png');
+        this.load.image('healthUpgrade2', 'assets/ui/healthUpgrade2.png');
+        this.load.image('healthUpgrade3', 'assets/ui/healthUpgrade3.png');
+        this.load.image('healthUpgrade4', 'assets/ui/healthUpgrade4.png');
 
-        this.load.image('speedUpgrade1', '../assets/ui/speedUpgrade1.png');
-        this.load.image('speedUpgrade2', '../assets/ui/speedUpgrade2.png');
+        this.load.image('speedUpgrade1', 'assets/ui/speedUpgrade1.png');
+        this.load.image('speedUpgrade2', 'assets/ui/speedUpgrade2.png');
 
-        this.load.image('questionMark', '../assets/ui/questionMark.png');
+        this.load.image('questionMark', 'assets/ui/questionMark.png');
 
 
         // Audio
-        this.load.audio('click', '../assets/sounds/effects/click.wav');
-        this.load.audio('menuMusic', '../assets/sounds/music/menuMusic.mp3');
+        this.load.audio('click', 'assets/sounds/effects/click.wav');
+        this.load.audio('menuMusic', 'assets/sounds/music/menuMusic.mp3');
 
         // Font
-        this.loadFont('minimalPixel', '../assets/fonts/MinimalPixel.ttf');
+        this.loadFont('minimalPixel', 'assets/fonts/MinimalPixel.ttf');
         
     }
 
@@ -355,11 +355,64 @@ export class MenuScene extends Phaser.Scene {
         let infoContainer = this.add.image(this.sys.game.canvas.width / 2, 350, 'infoContainer');
         infoContainer.setScale(20);
         // show credits text
-        let creditsText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Created and developed by Anže Vidmar\nTextures and assets:\nPixel Crawler by Anakolisa\nPixel Art GUI Elements by Mounir Tohami\nShikashi\'s Fantasy Icons Pack by cheekyinkling\nFree Pixel Effects Pack by CodeManu\nMinimalPixel font by Mounir Tohami\nSound effects created with jsfxr ', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
-        creditsText.setOrigin(0.5, 0.5);
-        creditsText.setLineSpacing(15);
+        //let creditsText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Created and developed by Anže Vidmar\nTextures and assets:\nPixel Crawler by Anakolisa\nPixel Art GUI Elements by Mounir Tohami\nShikashi\'s Fantasy Icons Pack by cheekyinkling\nFree Pixel Effects Pack by CodeManu\nMinimalPixel font by Mounir Tohami\nSound effects created with jsfxr ', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText1 = this.add.text(this.sys.game.canvas.width / 2, 200 - 5, 'Created and developed by Anže Vidmar\nTextures and assets:', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText2 =  this.add.text(this.sys.game.canvas.width / 2, 300 - 40, 'Pixel Crawler by Anakolisa', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText3 =  this.add.text(this.sys.game.canvas.width / 2, 350 - 40, 'Pixel Art GUI Elements by Mounir Tohami', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText4 =  this.add.text(this.sys.game.canvas.width / 2, 400 - 40, 'Shikashi\'s Fantasy Icons Pack by cheekyinkling', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText5 =  this.add.text(this.sys.game.canvas.width / 2, 450 - 40, 'Free Pixel Effects Pack by CodeManu', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText6 =  this.add.text(this.sys.game.canvas.width / 2, 500 - 40, 'MinimalPixel font by Mounir Tohami', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText7 =  this.add.text(this.sys.game.canvas.width / 2, 550 - 40, 'Sound effects created with jsfxr', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+        let creditsText8 =  this.add.text(this.sys.game.canvas.width / 2, 600 - 40, 'Music by David Renda', { font: '32px minimalPixel', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 5 });
+
+        creditsText2.setInteractive();
+        creditsText3.setInteractive();
+        creditsText4.setInteractive();
+        creditsText5.setInteractive();
+        creditsText6.setInteractive();
+        creditsText7.setInteractive();
+        creditsText8.setInteractive();
+
+        creditsText2.on('pointerdown', function() {
+            window.location.href = 'https://anokolisa.itch.io/dungeon-crawler-pixel-art-asset-pack';
+        });
+        creditsText3.on('pointerdown', function() {
+            window.location.href = 'https://mounirtohami.itch.io/pixel-art-gui-elements';
+        });
+        creditsText4.on('pointerdown', function() {
+            window.location.href = 'https://cheekyinkling.itch.io/shikashis-fantasy-icons-pack'
+        });
+        creditsText5.on('pointerdown', function() {
+            window.location.href = 'https://codemanu.itch.io/pixelart-effect-pack'
+        });
+        creditsText6.on('pointerdown', function() {
+            window.location.href = 'https://mounirtohami.itch.io/minimalpixel-font'
+        });
+        creditsText7.on('pointerdown', function() {
+            window.location.href = 'https://sfxr.me'
+        });
+        creditsText8.on('pointerdown', function() {
+            window.location.href = 'https://www.fesliyanstudios.com/royalty-free-music/download/8-bit-menu/287';
+        }); 
+
+        creditsText1.setOrigin(0.5, 0.5);
+        creditsText1.setLineSpacing(15);
+        creditsText2.setOrigin(0.5, 0.5);
+        creditsText2.setLineSpacing(15);
+        creditsText3.setOrigin(0.5, 0.5);
+        creditsText3.setLineSpacing(15);
+        creditsText4.setOrigin(0.5, 0.5);
+        creditsText4.setLineSpacing(15);
+        creditsText5.setOrigin(0.5, 0.5);
+        creditsText5.setLineSpacing(15);
+        creditsText6.setOrigin(0.5, 0.5);
+        creditsText6.setLineSpacing(15);
+        creditsText7.setOrigin(0.5, 0.5);
+        creditsText7.setLineSpacing(15);
+        creditsText8.setOrigin(0.5, 0.5);
+        creditsText8.setLineSpacing(15);
         this.creditsMenuComponents = new Array();
-        this.creditsMenuComponents.push(infoContainer, creditsText, backButtonContainerTop, backButtonContainerBottom, backButton, backButtonText);
+        this.creditsMenuComponents.push(infoContainer, creditsText1, creditsText2, creditsText3, creditsText4, creditsText5, creditsText6, creditsText7, creditsText8, backButtonContainerTop, backButtonContainerBottom, backButton, backButtonText);
         creditsButton.on('pointerdown', () => {
             this.sound.play('click', { volume: 0.5, loop: false });
             this.hideMainMenu();
@@ -443,12 +496,12 @@ export class MenuScene extends Phaser.Scene {
         soundButton.setScale(4.5);
         soundButton.on('pointerdown', function() {
             if (JSON.parse(localStorage.getItem("soundSetting"))) {
-                soundButtonText.setText('Sound: Off');
+                soundButtonText.setText('Music: Off');
                 localStorage.setItem("soundSetting", false);
                 this.music.stop();
             }
             else {
-                soundButtonText.setText('Sound: On');
+                soundButtonText.setText('Music: On');
                 localStorage.setItem("soundSetting", true);
                 this.music.play();
             }
@@ -486,14 +539,14 @@ export class MenuScene extends Phaser.Scene {
         if (localStorage.getItem("soundSetting") !== null) {
             let value = JSON.parse(localStorage.getItem("soundSetting"));
             if (value) {
-                soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Sound: On', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+                soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Music: On', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             }
             else {
-                soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Sound: Off', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+                soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Music: Off', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             }
         }
         else {
-            soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Sound: On', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
+            soundButtonText = this.add.text(this.sys.game.canvas.width / 2, 350, 'Music: On', { font: '32px minimalPixel', fill: '#ffffff', stroke: '#000000', strokeThickness: 5 });
             localStorage.setItem("soundSetting", true);
         }
         if (localStorage.getItem("musicSetting") !== null) {
@@ -511,7 +564,9 @@ export class MenuScene extends Phaser.Scene {
         }
         soundButtonText.setOrigin(0.5, 0.5);
         musicButtonText.setOrigin(0.5, 0.5);
-        this.settingsMenuComponents.push(soundButton, soundButtonText, musicButton, musicButtonText, backButton, backButtonText);
+        musicButton.setVisible(false);
+        musicButtonText.setVisible(false);
+        this.settingsMenuComponents.push(soundButton, soundButtonText, backButton, backButtonText);
         this.hideSettingsMenu();
         settingsButton.on('pointerdown', () => {
             this.sound.play('click', { volume: 0.5, loop: false });

@@ -1,0 +1,4 @@
+Ime: Deorsolis
+Opis: Deorsolis je horde survival igra, podobna igram kot sta Vampire Survivors in 20 Minutes Till Dawn, kjer igralec poskuša preživeti, dokler se čas ne izteče. Pri tem  uniči čim več nasprotnikov in s tem zviša svoj nivo ki mu omogoči nadgradnjo sposobnosti ali pa dodajanje novih orožji.
+Žanr: Roguelike
+Podprte naprave: vse naprave z brskalnikom, miško in tipkovnico

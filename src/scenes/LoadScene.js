@@ -12,8 +12,6 @@ export class LoadScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('demoTile', '/assets/environments/dungeon/Tile.png', {frameWidth: 16, frameHeight: 16});
-
     }
 
     create() {
